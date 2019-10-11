@@ -8,9 +8,11 @@ from os.path import realpath, dirname, join, exists
 from os import mkdir
 import argparse
 
+# path to grace_spectra_plotter
+grace_plotter_path = realpath("grace_spectra_plotter.exe")
 
-# if you're running this file, on its own, edit the variables below!
-#leave the function as-is
+# if you're running this file on its own, edit the variables below!
+# but make sure to leave the function as-is, so you can still run with "-f"
 
 # output_paths = paths to ncsd output files
 output_paths=["/Users/callum/Desktop/rough_code/ncsd_python/ncsd_output_files/Li9_n3lo-NN3Nlnl-srg2.0_Nmax0-6.20"]

@@ -1,9 +1,11 @@
 """Contains functions to help plot (or otherwise export) data."""
 from . import formats
+from output_exporter import grace_plotter_path
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 """data must be of the form:
     data = {
@@ -42,8 +44,6 @@ import matplotlib.pyplot as plt
 """
 
 def write_xmgrace(input_data, save_dir):
-    grace_plotter_path = os.path.realpath(
-        os.path.join(save_dir, "../grace_spectra_plotter.exe"))
     """creates a file which can be used by xmgrace"""
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
