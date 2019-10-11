@@ -33,19 +33,19 @@ assert machine in ["cedar", "summit", "local"]
 # PARAMETERS -- specify all as single parameter or list []
 man_params = ManParams(
     # nucleus details:
-    Z=1,  # number of protons
-    N=1,  # number of neutrons
+    Z=3,  # number of protons
+    N=5,  # number of neutrons
     hbar_omega=20,  # harmonic oscillator frequency
-    N_1max=1,  # highest possible excited state of 1 nucleon
-    N_12max=2,  # highest possible state of 2 nucleons, added
+    N_1max=9,  # highest possible excited state of 1 nucleon
+    N_12max=10,  # highest possible state of 2 nucleons, added
     # if 3-body, change this and interaction name, otherwise just leave them be
     N_123max=11,  # highest possible state of 3 nucleons, added
 
     # interaction names, these files must be within int_dir
-    two_body_interaction="TBME.int",
-    three_body_interaction="none",
+    two_body_interaction="some_tbme_file",
+    three_body_interaction="some_three_body_file",
     # potential is just for naming purposes, does not affect calculations
-    potential_name="test_potential",
+    potential_name="some_potential",
 
     # computation-related parameters:
     Nmax_min=0,  # Nmax_min and Nmax_max control how long the program runs
@@ -64,7 +64,7 @@ man_params = ManParams(
 
     # machine-related parameters:
     time="0 8 0",  # runtime, "days hours minutes". It will be formatted later
-    mem=1.0,  # memory, in GB
+    mem=80.0,  # memory, in GB
     n_nodes=1024  # number of nodes
 )
 
