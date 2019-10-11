@@ -83,6 +83,10 @@ at the parameters there for extra details.
 ## Prerequisites
 
 - Python (3.7.4 ideally, other versions may work)
+- `numpy`, install with `pip install --user numpy`
+- `matplotlib`, install with `pip install --user matplotlib`
+  
+  
 - NCSD executable
 - interaction files
 - `grace_spectra_plotter.exe`
