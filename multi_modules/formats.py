@@ -71,7 +71,7 @@ done
 
 mv mfd.log mfd.log_{output_file}
 
-python3 {output_plotter} -f {output_file}
+python {output_plotter} -f {output_file}
 """
 
 cedar_batch_format = """#!/bin/bash
@@ -108,7 +108,7 @@ done
 
 mv mfd.log mfd.log_{output_file}
 
-python3 {output_plotter} -f {output_file}
+python {output_plotter} -f {output_file}
 """
 
 summit_batch_format = """#!/bin/bash
@@ -171,7 +171,7 @@ done
 
 mv mfd.log mfd.log_{output_file}
 
-python3 {output_plotter} -f {output_file}
+python {output_plotter} -f {output_file}
 """
 
 potential_end_bit_format = """

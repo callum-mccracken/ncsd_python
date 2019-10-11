@@ -167,5 +167,4 @@ def ncsd_multi_run(man_params, paths, machine, run=True):
                 system("bsub "+batch_path)
             else:
                 raise ValueError("Invalid machine!")
-
     print("done!")

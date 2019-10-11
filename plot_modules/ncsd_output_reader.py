@@ -130,6 +130,17 @@ def read_ncsd_output(filename):
             repetition = repetitions[angular_momentum]
             data_dict["calculated_spectrum"][Nmax][state_num] = [
                 angular_momentum, repetition, parity, energy]
+    # ensure last Nmax was fully completed, remove if not
+    
+    Nmax_max = max(data_dict["calculated_spectrum"].keys())
+    # only do this if there is in fact a second-last Nmax
+    if Nmax_max - 2 in data_dict["calculated_spectrum"].keys():
+        Nmax_max_dict = data_dict["calculated_spectrum"][Nmax_max]
+        Nmax_max_minus2_dict = data_dict["calculated_spectrum"][Nmax_max - 2]
+        # if not the same length as the last one, remove last one
+        if len(Nmax_max_dict.keys()) != len(Nmax_max_minus2_dict.keys()):
+            del data_dict["calculated_spectrum"][Nmax_max]
+
     return data_dict
 
 

@@ -6,3 +6,9 @@
 **.exe
 **.pyc
 **.pyo
+**.grdt
+**.f90
+**.pdf
+**.agr
+**.mod
+**/ncsd_output_files/**

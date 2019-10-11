@@ -20,7 +20,6 @@ from output_exporter import __file__ as output_plotter_path
 
 # change these to suit your needs, but don't remove the "realpath"
 # empty string = current working directory, relative paths = relative to cwd
-chdir(dirname(__file__))
 ncsd_path = realpath("ncsd-it.exe")
 working_dir = realpath("")
 int_dir = realpath("../interactions/")
@@ -46,12 +45,12 @@ man_params = ManParams(
     two_body_interaction="TBME.int",
     three_body_interaction="none",
     # potential is just for naming purposes, does not affect calculations
-    potential_name="TEST_potential",
+    potential_name="test_potential",
 
     # computation-related parameters:
     Nmax_min=0,  # Nmax_min and Nmax_max control how long the program runs
-    Nmax_max=2,  # e.g. 0 - 8 will give you eigenvectors for Nmax = 0,2,...,8
-    Nmax_IT=12,  # Nmax for Importance Truncation
+    Nmax_max=10,  # e.g. 0 - 8 will give you eigenvectors for Nmax = 0,2,...,8
+    Nmax_IT=6,  # Nmax for Importance Truncation
     interaction_type=2,  # make sure abs(interaction_type)==3 for 3-body
     n_states=1,  # number of final states (= number of energy values)
     iterations_required=10,  # number of iterations required in Lanczos step

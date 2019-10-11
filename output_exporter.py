@@ -13,19 +13,19 @@ import argparse
 #leave the function as-is
 
 # output_paths = paths to ncsd output files
-output_paths=[]
+output_paths=["/Users/callum/Desktop/rough_code/ncsd_python/ncsd_output_files/Li9_n3lo-NN3Nlnl-srg2.0_Nmax0-6.20"]
 # save_dir = where to save the plot files
-save_dir=""  # blank string = current working directory
+save_dir="H2"  # blank string = current working directory
 # output_type is the kind(s) of output you want, in a list
 # possible output types: xmgrace, csv, matplotlib
 # FYI, the output is saved in the same directory as this script.
 out_types=["xmgrace"]
 # if there are any Nmax values you want to skip, put them here,
 # e.g. [0,2,4]. If you don't want to skip any, use []
-skip_Nmax=[]
+skip_Nmax=[0]
 # states and only want to plot 8, use this.
 # if you don't want a max state, set max_state to a huge number, e.g. 1e100
-max_state=1e100
+max_state=6
 
 def make_plot_files(
    output_paths=[],

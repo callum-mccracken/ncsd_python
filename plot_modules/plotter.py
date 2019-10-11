@@ -1,8 +1,7 @@
 """Contains functions to help plot (or otherwise export) data."""
 from . import formats
 
-from os.path import realpath, join, split, exists
-from os import mkdir, system
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -43,7 +42,8 @@ import matplotlib.pyplot as plt
 """
 
 def write_xmgrace(input_data, save_dir):
-    grace_plotter_path = realpath(join(save_dir, "grace_spectra_plotter.exe"))
+    grace_plotter_path = os.path.realpath(
+        os.path.join(save_dir, "../grace_spectra_plotter.exe"))
     """creates a file which can be used by xmgrace"""
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
@@ -96,9 +96,9 @@ def write_xmgrace(input_data, save_dir):
     interaction =input_data["interaction_name"]
     
     # then save
-    filename = split(input_data["filename"])[-1]
+    filename = os.path.split(input_data["filename"])[-1]
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.grdt'
-    save_path = join(save_dir, filename)
+    save_path = os.path.join(save_dir, filename)
     with open(save_path, "w+") as open_file:
         open_file.write(
             formats.xmgrace_format.format(
@@ -114,12 +114,12 @@ def write_xmgrace(input_data, save_dir):
             )
         )
     # now call the grace_spectra_plotter.exe file
-    system(grace_plotter_path + " " + save_path + " -excited")
+    os.system(grace_plotter_path + " " + save_path + " -excited")
     plot = False
     if plot:
         # and actually use xmgrace to plot
         agr_path = save_path[:save_path.index(".grdt")] + ".agr"
-        system("xmgrace " + agr_path)
+        os.system("xmgrace " + agr_path)
 
 
 def write_csv(input_data, save_dir):
@@ -164,9 +164,9 @@ def write_csv(input_data, save_dir):
             [title, str(state_num), Jx2, repetition, parity, energy]) + "\n"
     file_string += lines
     # now save
-    filename = split(input_data["filename"])[-1]
+    filename = os.path.split(input_data["filename"])[-1]
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.csv'
-    with open(join(save_dir, filename), "w+") as open_file:
+    with open(os.path.join(save_dir, filename), "w+") as open_file:
         open_file.write(file_string)
 
 
@@ -242,9 +242,9 @@ def matplotlib_plot(input_data, save_dir):
             # othewise we've reached the end of the list    
 
     # save
-    filename = split(input_data["filename"])[-1]
+    filename = os.path.split(input_data["filename"])[-1]
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.png'
-    plt.savefig(join(save_dir, filename))
+    plt.savefig(os.path.join(save_dir, filename))
 
 
 def export_data(data, save_dir, out_type="xmgrace"):
