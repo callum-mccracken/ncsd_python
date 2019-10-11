@@ -321,7 +321,6 @@ def get_online_data_wrapper(calc_data):
     name_map = {"bnl": "BROOKHAVEN", "tunl": "TUNL"}
     func_map = {"bnl": get_bnl_data, "tunl": get_tunl_data}
     try:
-        print(1/"a")
         data = func_map[src](calc_data)
         return data
     except Exception as e:
