@@ -65,7 +65,7 @@ def read_ncsd_output(filename):
     data_dict["interaction_name"] = int_name
 
     repetitions = {}
-
+    previous_nmax_section = {}
     # get important bits from file
     for line in lines:
         words = line.split()
@@ -102,21 +102,46 @@ def read_ncsd_output(filename):
                 raise ValueError("What have you done?")
             # empty repetitions dict
             repetitions = {}
+        # special case for importance truncation
+        if "Importance Truncation" in line:
+            # we only need to worry about this if we already have data
+            # for this Nmax value
+            if Nmax in data_dict["calculated_spectrum"].keys():
+                # save the last time this was in the dict
+                previous_nmax_section = data_dict["calculated_spectrum"][Nmax]
+                # and clear the values currently there
+                data_dict["calculated_spectrum"][Nmax] = {}
+                # then later when we see the energy spectrum printed
+                # and we know we made it to the end of this Nmax run,
+                # we can clear previous_nmax_section, putting the data from
+                # that into the data_dict.
+        if "The energy spectrum is:" in line:
+            # we've made it to the end of a section!
+
+            # if this was an importance truncation section,
+            # we should have a non-empty previous_nmax_section
+            if previous_nmax_section != {}:
+                # since we made it to the end of this section, we don't need
+                # the copy of last section anymore
+                # this signals a completed section for other parts of the code
+                previous_nmax_section = {}
         if "State #" in line:
             # parse line for J, repetition, parity, E
             line = line[len("State #")+1:] # to make word separation easier            
             try:
                 state_num = int(words[2])
                 energy = float(words[5])
-                angular_momentum = round(float(words[8]) * 2)  # x2 so it's an int
-                isospin = round(float(words[11]) * 2)  # x2 so it's an int                
+                # we'll round these to the nearest 0.5
+                angular_momentum = round(float(words[8])*2) / 2
+                isospin = round(float(words[11]) * 2) / 2
             except ValueError:
                 # for states >= 10, it's written as #10 not # 9
                 # I assume we never need to deal with states >=100
                 state_num = int(words[1][1:])
                 energy = float(words[4])
-                angular_momentum = round(float(words[7]) * 2)  # x2 so it's an int
-                isospin = round(float(words[10]) * 2)  # x2 so it's an int
+                # we'll round these to the nearest 0.5
+                angular_momentum = round(float(words[7]) * 2) / 2
+                isospin = round(float(words[10]) * 2) / 2
             # write down energy relative to state zero energy
             if state_num == 1: # I assume the first state must have already come
                 state_1_energy = energy
@@ -130,16 +155,21 @@ def read_ncsd_output(filename):
             repetition = repetitions[angular_momentum]
             data_dict["calculated_spectrum"][Nmax][state_num] = [
                 angular_momentum, repetition, parity, energy]
-    # ensure last Nmax was fully completed, remove if not
     
-    Nmax_max = max(data_dict["calculated_spectrum"].keys())
+    # if we reach the end of the file and still have a non-empty
+    # previous_nmax_section, we write that section into the data_dict
+    # since the stuff we tried to read wasn't complete.
+    if previous_nmax_section != {}:
+        data_dict["calculated_spectrum"][Nmax] = previous_nmax_section
+
+    # ensure last Nmax was fully completed, remove if not
     # only do this if there is in fact a second-last Nmax
-    if Nmax_max - 2 in data_dict["calculated_spectrum"].keys():
-        Nmax_max_dict = data_dict["calculated_spectrum"][Nmax_max]
-        Nmax_max_minus2_dict = data_dict["calculated_spectrum"][Nmax_max - 2]
+    if Nmax - 2 in data_dict["calculated_spectrum"].keys():
+        Nmax_dict = data_dict["calculated_spectrum"][Nmax]
+        Nmax_minus2_dict = data_dict["calculated_spectrum"][Nmax - 2]
         # if not the same length as the last one, remove last one
-        if len(Nmax_max_dict.keys()) != len(Nmax_max_minus2_dict.keys()):
-            del data_dict["calculated_spectrum"][Nmax_max]
+        if len(Nmax_dict.keys()) != len(Nmax_minus2_dict.keys()):
+            del data_dict["calculated_spectrum"][Nmax]
 
     return data_dict
 

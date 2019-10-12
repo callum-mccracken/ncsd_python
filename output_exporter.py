@@ -15,19 +15,23 @@ grace_plotter_path = realpath("grace_spectra_plotter.exe")
 # but make sure to leave the function as-is, so you can still run with "-f"
 
 # output_paths = paths to ncsd output files
-output_paths=["/Users/callum/Desktop/rough_code/ncsd_python/ncsd_output_files/Li9_n3lo-NN3Nlnl-srg2.0_Nmax0-6.20"]
+output_paths=["/Users/callum/Desktop/rough_code/ncsd_python/example_files/B11_NNn4lo500_3Nlnl-srg1.8_Nmax0-8.18_IT_12st"]
+
 # save_dir = where to save the plot files
 save_dir="H2"  # blank string = current working directory
+
 # output_type is the kind(s) of output you want, in a list
 # possible output types: xmgrace, csv, matplotlib
 # FYI, the output is saved in the same directory as this script.
 out_types=["xmgrace"]
+
 # if there are any Nmax values you want to skip, put them here,
 # e.g. [0,2,4]. If you don't want to skip any, use []
-skip_Nmax=[0]
+skip_Nmax=[]
+
 # states and only want to plot 8, use this.
 # if you don't want a max state, set max_state to a huge number, e.g. 1e100
-max_state=6
+max_state=1e100
 
 def make_plot_files(
    output_paths=[],

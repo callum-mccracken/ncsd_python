@@ -296,18 +296,16 @@ def get_bnl_data(calc_data):
     # produce experimental spectrum
     nmax_max = max(calc_spectrum.keys())
     for state in sorted(calc_spectrum[nmax_max].keys()):
-        J2, repetition, parity, energy = calc_spectrum[nmax_max][state]
+        J, repetition, parity, energy = calc_spectrum[nmax_max][state]
         for o_d in online_data:
             # o_ for "online"
             o_J, o_T, o_parity, o_energy = o_d
-            o_J2 = int(2 * o_J)
-            o_T2 = int(2 * o_T)
             # take online energy if online data matches all other parameters
-            if J2 == o_J2 and parity == o_parity:
+            if J == o_J and parity == o_parity:
                 energy = o_energy
                 break
         online_dict["expt_spectrum"]["Expt"][state] = [
-            J2, repetition, parity, energy]
+            J, repetition, parity, energy]
 
     return online_dict
 
@@ -318,17 +316,15 @@ def get_online_data_wrapper(calc_data):
     Instead, filler data is returned.
     """
     src = "bnl"
-    name_map = {"bnl": "BROOKHAVEN", "tunl": "TUNL"}
+    name_map = {"bnl": "bnl.gov", "tunl": "tunl.duke.edu"}
     func_map = {"bnl": get_bnl_data, "tunl": get_tunl_data}
     try:
         data = func_map[src](calc_data)
         return data
     except Exception as e:
-        print("Warning raised when trying to get data from "+name_map[src]+":")
+        print("\nWarning raised when trying to get data from "+name_map[src])
         print(e)
-        print("if your exception was 'no module named <x>', "
-              "try runnning 'pip install --user <x>'")
-        print("Returning filler data instead")
+        print("Returning filler 'experimental' data instead\n")
         # produce experimental spectrum
         calc_spectrum = calc_data["calculated_spectrum"]
         nmax_max = max(calc_spectrum.keys())
