@@ -15,7 +15,7 @@ from multi_modules.data_structures import ManParams
 from multi_modules.ncsd_multi_run import ncsd_multi_run
 from multi_modules.data_checker import get_int_dir
 from output_exporter import __file__ as output_plotter_path
-
+sys.path.append(output_plotter_path)
 # sys.tracebacklimit = 0  # If debugging comment this out! Suppresses tracebacks
 
 # change these to suit your needs, but don't remove the "realpath"

@@ -1,6 +1,6 @@
 """Contains functions to help plot (or otherwise export) data."""
 from . import formats
-from output_exporter import grace_plotter_path
+import output_exporter
 
 import os
 import numpy as np
@@ -114,7 +114,7 @@ def write_xmgrace(input_data, save_dir):
             )
         )
     # now call the grace_spectra_plotter.exe file
-    os.system(grace_plotter_path + " " + save_path + " -excited")
+    os.system(output_exporter.grace_plotter_path + " " + save_path + " -excited")
     plot = False
     if plot:
         # and actually use xmgrace to plot
