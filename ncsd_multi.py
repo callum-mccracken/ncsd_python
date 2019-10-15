@@ -54,7 +54,7 @@ man_params = ManParams(
     interaction_type=2,  # make sure abs(interaction_type)==3 for 3-body
     n_states=1,  # number of final states (= number of energy values)
     iterations_required=10,  # number of iterations required in Lanczos step
-    irest=0,  # restart? 1 = yes, 0 = no
+    irest=0,  # restart? 4 = yes, 0 = no
     nhw_restart=-1,  # not sure what this one does
     kappa_points=4,  # number of kappa values
     # make sure you keep this next one written as a string!
