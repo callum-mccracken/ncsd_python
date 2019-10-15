@@ -68,7 +68,6 @@ def read_ncsd_output(filename):
     previous_nmax_section = {}
     # get important bits from file
     for line in lines:
-        print
         words = line.split()
         if "Z" in line and "N" in line and "hbar" in line:
             Z = int(words[2])

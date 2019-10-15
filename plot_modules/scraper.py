@@ -324,9 +324,9 @@ def get_online_data_wrapper(calc_data, get_online_data):
             return data
         except Exception as e:
             print("\nWarning raised when trying to get data from "+name_map[src])
-            print(e)
+            print(e, "\n")
     # produce experimental spectrum
-    print("Returning filler 'experimental' data\n")
+    print("Returning filler 'experimental' data")
     calc_spectrum = calc_data["calculated_spectrum"]
     nmax_max = max(calc_spectrum.keys())
     filler_data = { "expt_spectrum": { "Expt": { } } }
