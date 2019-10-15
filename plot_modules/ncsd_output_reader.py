@@ -143,11 +143,9 @@ def read_ncsd_output(filename):
                 # we'll round these to the nearest 0.5
                 angular_momentum = round(float(words[7]) * 2) / 2
                 isospin = round(float(words[10]) * 2) / 2
-            # write down energy relative to state zero energy
-            if state_num == 1: # I assume the first state must have already come
-                state_1_energy = energy
-            # make energy relative
-            energy = energy - state_1_energy
+            
+            # note we are grabbing the absolute binding energies, not relative!
+
             # get repetition number
             if angular_momentum in repetitions.keys():
                 repetitions[angular_momentum] += 1

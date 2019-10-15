@@ -20,7 +20,7 @@ lin lin
 
 xmgrace_Nmax_title_format = "N\\smax\\N = {Nmax}"
 
-xmgrace_data_line_format = "{Jx2} {repetition} {parity}   {energy:.4f}\n"
+xmgrace_data_line_format = "{j} {repetition} {parity}   {energy:.4f}\n"
 
 xmgrace_dataset_format = "{title}\n{lines}"
 

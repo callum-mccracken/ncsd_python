@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
         "calculated_spectrum": {
             <Nmax>: {
                 <state_num>: [
-                    angular_momentum*2: integer,
+                    angular_momentum: float,
                     repetition: integer,
                     parity: integer,
                     energy: float
@@ -33,7 +33,7 @@ import matplotlib.pyplot as plt
         "expt_spectrum": {
             "Expt": {
                 <state_num>: [
-                    angular_momentum*2: integer,
+                    angular_momentum: float,
                     repetition: integer,
                     parity: integer,
                     energy: float
@@ -45,44 +45,69 @@ import matplotlib.pyplot as plt
 
 def write_xmgrace(input_data, save_dir):
     """creates a file which can be used by xmgrace"""
+    # NOTE: "ex" prefix --> excitation energies (as opposed to binding energies)
+
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
     e_spectrum = input_data["expt_spectrum"]
     
+    # variables to contain numerical data
     data_string = ""
+    ex_data_string = ""
+
+    # string containing axis labels
     axis_labels = ""
-    # calculated data
+
+    # the maximum state number that will be plotted
     max_state = input_data["max_state"]
+    
     for Nmax in sorted(c_spectrum.keys()):
         if Nmax in input_data["skip_Nmax"]:
             continue
         title = formats.xmgrace_Nmax_title_format.format(Nmax=Nmax)
+        # lines = string to hold the lines containing
+        # [j, repetition, parity, energy]
+        # that we're going to generate
         lines = ""
+        ex_lines = ""
+        
+        # this stores the ground state energy, for calculating relative energies
+        state_1_energy = c_spectrum[Nmax][1][3]
         for state_num in sorted(c_spectrum[Nmax].keys()):
             if state_num > max_state:
                 continue
+            j, repetition, parity, energy = c_spectrum[Nmax][state_num]
+            ex_energy = energy - state_1_energy
             lines += formats.xmgrace_data_line_format.format(
-                Jx2=c_spectrum[Nmax][state_num][0],
-                repetition=c_spectrum[Nmax][state_num][1],
-                parity=c_spectrum[Nmax][state_num][2],
-                energy=c_spectrum[Nmax][state_num][3])
+                j=j,repetition=repetition, parity=parity, energy=energy)
+            ex_lines += formats.xmgrace_data_line_format.format(
+                j=j, repetition=repetition, parity=parity, energy=ex_energy)
+
         data_string += formats.xmgrace_dataset_format.format(
             title=title, lines=lines)
+        ex_data_string += formats.xmgrace_dataset_format.format(
+            title=title, lines=ex_lines)
         axis_labels += formats.xmgrace_axis_label_line.format(Nmax=Nmax)
     
-    # experimental data, only 1 dataset
+    # experimental data, only 1 dataset.
     title = "Expt"
     lines = ""
+    ex_lines = ""
     for state_num in sorted(e_spectrum[title].keys()):
         if state_num > max_state:
             continue
+        j, repetition, parity, energy = c_spectrum[Nmax][state_num]
+        # note: state_1_energy is the ground state energy of the largest Nmax
+        # (since we haven't changed it since the end of the last loop)
+        ex_energy = energy - state_1_energy
         lines += formats.xmgrace_data_line_format.format(
-            Jx2=e_spectrum[title][state_num][0],
-            repetition=e_spectrum[title][state_num][1],
-            parity=e_spectrum[title][state_num][2],
-            energy=e_spectrum[title][state_num][3])
+            j=j, repetition=repetition, parity=parity, energy=energy)
+        ex_lines += formats.xmgrace_data_line_format.format(
+            j=j, repetition=repetition, parity=parity, energy=ex_energy)
     data_string += formats.xmgrace_dataset_format.format(
         title=title, lines=lines)
+    ex_data_string += formats.xmgrace_dataset_format.format(
+        title=title, lines=ex_lines)
     axis_labels += title
     
     # now a couple final things
@@ -95,10 +120,13 @@ def write_xmgrace(input_data, save_dir):
     element = input_data["element_name"]
     interaction =input_data["interaction_name"]
     
-    # then save
+    # then save absolute energies and relative ones
     filename = os.path.split(input_data["filename"])[-1]
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.grdt'
+    ex_filename = filename[:filename.index(".grdt")]+'_excited.grdt'
     save_path = os.path.join(save_dir, filename)
+    ex_save_path = os.path.join(save_dir, ex_filename)
+    # write binding energy file
     with open(save_path, "w+") as open_file:
         open_file.write(
             formats.xmgrace_format.format(
@@ -113,20 +141,39 @@ def write_xmgrace(input_data, save_dir):
                 data = data_string
             )
         )
+    # write excited file
+    with open(ex_save_path, "w+") as open_file:
+        open_file.write(
+            formats.xmgrace_format.format(
+                num_spectra_plus_2 = num_spectra + 2,
+                num_states = num_states,
+                num_spectra = num_spectra,
+                num_plots = 1,
+                Z_plus_N = Z_plus_N,
+                element = element,
+                interaction_name = interaction,
+                axis_labels = axis_labels,
+                data = ex_data_string
+            )
+        )
+    
     # now call the grace_spectra_plotter.exe file
+    os.system(output_exporter.grace_plotter_path + " " + save_path)
     os.system(output_exporter.grace_plotter_path + " " + save_path + " -excited")
     plot = False
     if plot:
         # and actually use xmgrace to plot
         agr_path = save_path[:save_path.index(".grdt")] + ".agr"
         os.system("xmgrace " + agr_path)
+        ex_agr_path = save_path[:ex_save_path.index(".grdt")] + ".agr"
+        os.system("xmgrace " + ex_agr_path)
 
 
 def write_csv(input_data, save_dir):
     """creates a csv file containing useful data, for easier parsing later"""
     # write titles
     file_string = ",".join(
-        ["Title", "StateNum", "Jx2", "Tx2", "Parity", "Energy"]) + "\n"
+        ["Title", "StateNum", "J", "repetition", "Parity", "Energy"]) + "\n"
     
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
@@ -142,12 +189,12 @@ def write_csv(input_data, save_dir):
         for state_num in sorted(c_spectrum[Nmax].keys()):
             if state_num > max_state:
                 continue            
-            Jx2=str(c_spectrum[Nmax][state_num][0])
+            j=str(c_spectrum[Nmax][state_num][0])
             repetition=str(c_spectrum[Nmax][state_num][1])
             parity=str(c_spectrum[Nmax][state_num][2])
             energy=str(c_spectrum[Nmax][state_num][3])
             lines +=  ",".join(
-                [title, str(state_num), Jx2, repetition, parity, energy]) + "\n"
+                [title, str(state_num), j, repetition, parity, energy]) + "\n"
         file_string += lines
 
     # experimental data, only 1 dataset
@@ -156,12 +203,12 @@ def write_csv(input_data, save_dir):
     for state_num in sorted(e_spectrum[title].keys()):
         if state_num > max_state:
             continue
-        Jx2=str(e_spectrum[title][state_num][0])
+        j=str(e_spectrum[title][state_num][0])
         repetition=str(e_spectrum[title][state_num][1])
         parity=str(e_spectrum[title][state_num][2])
         energy=str(e_spectrum[title][state_num][3])
         lines += ",".join(
-            [title, str(state_num), Jx2, repetition, parity, energy]) + "\n"
+            [title, str(state_num), j, repetition, parity, energy]) + "\n"
     file_string += lines
     # now save
     filename = os.path.split(input_data["filename"])[-1]
