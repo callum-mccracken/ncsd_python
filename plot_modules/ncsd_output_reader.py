@@ -68,6 +68,7 @@ def read_ncsd_output(filename):
     previous_nmax_section = {}
     # get important bits from file
     for line in lines:
+        print
         words = line.split()
         if "Z" in line and "N" in line and "hbar" in line:
             Z = int(words[2])
@@ -103,7 +104,7 @@ def read_ncsd_output(filename):
             # empty repetitions dict
             repetitions = {}
         # special case for importance truncation
-        if "Importance Truncation" in line:
+        if line[:12] == " kappa_min= ":
             # we only need to worry about this if we already have data
             # for this Nmax value
             if Nmax in data_dict["calculated_spectrum"].keys():
@@ -111,6 +112,7 @@ def read_ncsd_output(filename):
                 previous_nmax_section = data_dict["calculated_spectrum"][Nmax]
                 # and clear the values currently there
                 data_dict["calculated_spectrum"][Nmax] = {}
+                repetitions = {}
                 # then later when we see the energy spectrum printed
                 # and we know we made it to the end of this Nmax run,
                 # we can clear previous_nmax_section, putting the data from

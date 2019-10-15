@@ -310,7 +310,7 @@ def get_bnl_data(calc_data):
     return online_dict
 
 
-def get_online_data_wrapper(calc_data):
+def get_online_data_wrapper(calc_data, get_online_data):
     """This tries to get online data,
     but doesn't break everything if it fails.
     Instead, filler data is returned.
@@ -318,18 +318,19 @@ def get_online_data_wrapper(calc_data):
     src = "bnl"
     name_map = {"bnl": "bnl.gov", "tunl": "tunl.duke.edu"}
     func_map = {"bnl": get_bnl_data, "tunl": get_tunl_data}
-    try:
-        data = func_map[src](calc_data)
-        return data
-    except Exception as e:
-        print("\nWarning raised when trying to get data from "+name_map[src])
-        print(e)
-        print("Returning filler 'experimental' data instead\n")
-        # produce experimental spectrum
-        calc_spectrum = calc_data["calculated_spectrum"]
-        nmax_max = max(calc_spectrum.keys())
-        filler_data = { "expt_spectrum": { "Expt": { } } }
-        for state in sorted(calc_spectrum[nmax_max].keys()):
-            filler_data["expt_spectrum"]["Expt"][state] = \
-                calc_spectrum[nmax_max][state]
-        return filler_data
+    if get_online_data:
+        try:
+            data = func_map[src](calc_data)
+            return data
+        except Exception as e:
+            print("\nWarning raised when trying to get data from "+name_map[src])
+            print(e)
+    # produce experimental spectrum
+    print("Returning filler 'experimental' data\n")
+    calc_spectrum = calc_data["calculated_spectrum"]
+    nmax_max = max(calc_spectrum.keys())
+    filler_data = { "expt_spectrum": { "Expt": { } } }
+    for state in sorted(calc_spectrum[nmax_max].keys()):
+        filler_data["expt_spectrum"]["Expt"][state] = \
+            calc_spectrum[nmax_max][state]
+    return filler_data
