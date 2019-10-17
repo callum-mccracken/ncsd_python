@@ -17,8 +17,11 @@ grace_plotter_path = realpath("grace_spectra_plotter.exe")
 # output_paths = paths to ncsd output files
 output_paths = ["/Users/callum/Desktop/rough_code/ncsd_python/example_files/B11_NNn4lo500_3Nlnl-srg1.8_Nmax0-8.18_IT_12st"]
 
-# save_dir = where to save the plot files
-save_dir = "H2"  # blank string = current working directory
+# save_dir = where to save the plot files, formatted as "string" or None.
+# None = save in the same directory as the first output_paths file
+# blank string = current working directory
+# some other string = save to that directory, include a final slash
+save_dir = None
 
 # output_type is the kind(s) of output you want, in a list
 # possible output types: xmgrace, csv, matplotlib
@@ -38,7 +41,7 @@ get_online_data = False
 
 def make_plot_files(
    output_paths=[],
-   save_dir="",
+   save_dir=None,
    out_types=["xmgrace"],
    skip_Nmax=[],
    max_state=1e100,
@@ -55,6 +58,10 @@ def make_plot_files(
         raise ValueError("must specify at least one output path")
     if type(output_paths) != list:
         output_paths = [output_paths]
+    
+    if save_dir is None:  # set it to something logical, 
+        save_dir = dirname(output_paths[0])
+
     # convert paths to full paths if they're relative
     output_paths = [realpath(path) for path in output_paths]
     save_dir = realpath(save_dir)
@@ -80,8 +87,11 @@ def make_plot_files(
     # do something with the data, whether that's plotting or just making files
     for out_type in out_types:
         print("exporting as type "+out_type)
-        plotter.export_data(data, save_dir, out_type=out_type)
+        plotter.export_data(
+            data, save_dir, grace_plotter_path, out_type=out_type)
 
+# add argument parser so we can call this with
+# python output_exporter.py -f "filename"
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('-f','--file', help='Filename', required=False, default=[])
 args = parser.parse_args()

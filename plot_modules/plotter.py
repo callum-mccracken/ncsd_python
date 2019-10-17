@@ -1,13 +1,12 @@
 """Contains functions to help plot (or otherwise export) data."""
 from . import formats
-import output_exporter
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-"""data must be of the form:
+"""
+data must be of the form:
     data = {
         "skip_Nmax" = [],
         "max_state" = 10,
@@ -38,12 +37,12 @@ import matplotlib.pyplot as plt
                     parity: integer,
                     energy: float
                 ]
-            }       
+            }
         }
     }
 """
 
-def write_xmgrace(input_data, save_dir):
+def write_xmgrace(input_data, save_dir, grace_plotter_path):
     """creates a file which can be used by xmgrace"""
     # NOTE: "ex" prefix --> excitation energies (as opposed to binding energies)
 
@@ -158,8 +157,8 @@ def write_xmgrace(input_data, save_dir):
         )
     
     # now call the grace_spectra_plotter.exe file
-    os.system(output_exporter.grace_plotter_path + " " + save_path)
-    os.system(output_exporter.grace_plotter_path + " " + save_path + " -excited")
+    os.system(grace_plotter_path + " " + save_path)
+    os.system(grace_plotter_path + " " + save_path + " -excited")
     plot = False
     if plot:
         # and actually use xmgrace to plot
@@ -294,17 +293,15 @@ def matplotlib_plot(input_data, save_dir):
     plt.savefig(os.path.join(save_dir, filename))
 
 
-def export_data(data, save_dir, out_type="xmgrace"):
+def export_data(data, save_dir, grace_plotter_path, out_type="xmgrace"):
     # gives a bunch of different ways to produce output
-    try:
-        plot_functions = {
-            "xmgrace": write_xmgrace,  # makes xmgrace files
-            "csv": write_csv,  # makes csv files
-            "matplotlib": matplotlib_plot,  # makes a matplotlib plot
-        }
-        plot_func = plot_functions[out_type]
-    except KeyError:
+    if out_type == "xmgrace":
+        write_xmgrace(data, save_dir, grace_plotter_path)
+    elif out_type == "csv":
+        write_csv(data, save_dir)
+    elif out_type == "matplotlib":
+        matplotlib_plot(data, save_dir)
+    else:
         raise ValueError("The output type "+out_type+" is not supported yet")    
 
-    plot_func(data, save_dir)
-
+print("imported the whole darn thing")
