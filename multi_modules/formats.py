@@ -83,6 +83,8 @@ cedar_batch_format = """#!/bin/bash
 #SBATCH --time={time}           # time (DD-HH:MM)
 #SBATCH --output={output}
 
+module load python/3.7.0
+
 cd {run_directory}
 
 potential="{potential}"
@@ -127,6 +129,7 @@ date
 module load cuda
 module load netlib-lapack/3.8.0
 module load gcc
+module load python/3.7.0
 
 #SUMMIT job submission is based on "resource sets"
 #so the main thing you submit is "number of resource sets"
