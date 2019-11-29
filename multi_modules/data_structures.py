@@ -1,7 +1,5 @@
-"""contains the Params class and subclasses, which are pretty basic
-
-they have attributes for every field in the data files, e.g. mfdp.dat files
-have a field for Z, so a MFDPParams object has an attribute .Z
+"""
+Contains the Params class and subclasses for specific file types.
 """
 # all the required/allowed fields for each data structure
 man_keys = [
@@ -161,12 +159,19 @@ default_keys = [
 
 
 class Params(object):
-    """I created this rather than just using dictionaries or something
-    for parameter passing, because with dicts, I tend to lose track of which
-    variables every file type needs, etc.
+    """
+    The Params class is pretty much just an ``argparse.Namespace``,
+    except you can only have certain variables.
 
-    When you create a Params object, it makes sure that all variables are
-    provided, and that no extra ones are provided!"""
+    For example, ``mfdp.dat`` files have a field for ``Z``,
+    so a ``Params`` object for that file type should have an attribute
+    ``self.Z``.
+
+    But if you tried to set ``self.z`` by accident it should raise an error.
+
+    This prevents accidentally setting the wrong attributes for a file type,
+    or too many parameters, or too few.
+    """
 
     def __init__(self, filetype, **kwargs):
         key_map = {
@@ -217,31 +222,37 @@ class Params(object):
 
 
 class ManParams(Params):
+    """``Params`` subclass for manual input"""
     def __init__(self, **kwargs):
         super(ManParams, self).__init__("MANUAL INPUT", **kwargs)
 
 
 class LocalBatchParams(Params):
+    """``Params`` subclass for local machine batch files"""
     def __init__(self, **kwargs):
         super(LocalBatchParams, self).__init__("LOCAL_BATCH", **kwargs)
 
 
 class CedarBatchParams(Params):
+    """``Params`` subclass for cedar batch files"""
     def __init__(self, **kwargs):
         super(CedarBatchParams, self).__init__("CEDAR_BATCH", **kwargs)
 
 
 class SummitBatchParams(Params):
+    """``Params`` subclass for summit batch files"""
     def __init__(self, **kwargs):
         super(SummitBatchParams, self).__init__("SUMMIT_BATCH", **kwargs)
 
 
 class MFDPParams(Params):
+    """``Params`` subclass for ``mfdp.dat`` files"""
     def __init__(self, **kwargs):
         super(MFDPParams, self).__init__("MFDP", **kwargs)
 
 
 class DefaultParams(Params):
+    """``Params`` subclass for default parameters"""
     def __init__(self, **kwargs):
         super(DefaultParams, self).__init__("DEFAULT", **kwargs)
 
