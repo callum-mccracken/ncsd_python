@@ -1,12 +1,9 @@
-"""Contains functions to help plot (or otherwise export) data."""
-from . import formats
-
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-
 """
-data must be of the form:
+Contains functions to help plot (or otherwise export) data.
+
+When calling most of these functions, data must be of the form:
+::
+
     data = {
         "skip_Nmax" = [],
         "max_state" = 10,
@@ -40,7 +37,15 @@ data must be of the form:
             }
         }
     }
+
 """
+from . import formats
+
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 
 def write_xmgrace(input_data, save_dir, grace_plotter_path):
     """creates a file which can be used by xmgrace"""
