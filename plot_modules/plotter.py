@@ -303,5 +303,3 @@ def export_data(data, save_dir, grace_plotter_path, out_type="xmgrace"):
         matplotlib_plot(data, save_dir)
     else:
         raise ValueError("The output type "+out_type+" is not supported yet")    
-
-print("imported the whole darn thing")

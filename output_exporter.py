@@ -90,18 +90,20 @@ def make_plot_files(
         plotter.export_data(
             data, save_dir, grace_plotter_path, out_type=out_type)
 
-# add argument parser so we can call this with
-# python output_exporter.py -f "filename"
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('-f','--file', help='Filename', required=False, default=[])
-args = parser.parse_args()
-if args.file != []:  # if filename provided
-    make_plot_files(output_paths=args.file)
-elif __name__ == "__main__":  # if not and we're running this file
-    make_plot_files(
-        output_paths=output_paths,
-        save_dir=save_dir,
-        out_types=out_types,
-        skip_Nmax=skip_Nmax,
-        max_state=max_state,
-        get_online_data=get_online_data)
+
+if __name__ == "__main__":
+    # add argument parser so we can call this with
+    # python output_exporter.py -f "filename"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('-f','--file', help='Filename', required=False, default=[])
+    args = parser.parse_args()
+    if args.file != []:  # if filename provided
+        make_plot_files(output_paths=args.file)
+    else:
+        make_plot_files(
+            output_paths=output_paths,
+            save_dir=save_dir,
+            out_types=out_types,
+            skip_Nmax=skip_Nmax,
+            max_state=max_state,
+            get_online_data=get_online_data)

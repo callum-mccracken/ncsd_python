@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
 """
 -contains function which gets important data from ncsd output files
-
-- also contains a couple small functions for getting names of nuclei
+-also contains a couple small functions for getting names of nuclei
 """
 
 from os.path import split
@@ -28,26 +26,28 @@ def read_ncsd_output(filename):
     """
     eventually returns a dict of the form:
 
-    dict = {
-        "element_name": "B",
-        "nucleus_name": "B11",
-        "Z": 5,
-        "N": 6,
-        "Z_plus_N": 11,
-        "n_states": 10,
-        "filename": "filename",
-        "interaction_name": "n3lo-NN3Nlnl-srg2.0"
-        "calculated_spectrum": {
-            Nmax: {
-                state_num: [
-                    J(angular momentum),
-                    Repetition,
-                    Parity,
-                    Energy
-                ],
+    ::
+
+        dict = {
+            "element_name": "B",
+            "nucleus_name": "B11",
+            "Z": 5,
+            "N": 6,
+            "Z_plus_N": 11,
+            "n_states": 10,
+            "filename": "filename",
+            "interaction_name": "n3lo-NN3Nlnl-srg2.0"
+            "calculated_spectrum": {
+                Nmax: {
+                    state_num: [
+                        J(angular momentum),
+                        Repetition,
+                        Parity,
+                        Energy
+                    ],
+                }
             }
         }
-    }
     """
     print("reading data from NCSD output file "+filename)
     # read file data
