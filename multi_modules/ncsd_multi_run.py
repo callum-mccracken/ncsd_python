@@ -1,8 +1,5 @@
 """
 Once we grab input from ``ncsd_multi.py``, this module actually processes it.
-
-- prepares input
-
 """
 # built-in modules
 from os import system, chdir, mkdir, symlink
