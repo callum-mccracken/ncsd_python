@@ -1,9 +1,9 @@
 """
-Holds big long strings to make writing files easier
+Contains long strings to make writing files easier.
 
-note: double curly braces tell Python you mean a literal curly brace
-      when you're formatting a string.
-      "{a}, {b}, {{a}}".format(a=1, b=2) produces the string "1, 2, {a}"
+Note: double curly braces tell Python you mean a literal curly brace
+when you're formatting a string.
+E.g. "{a}, {b}, {{a}}".format(a=1, b=2) produces the string "1, 2, {a}"
 """
 
 xmgrace_format = """

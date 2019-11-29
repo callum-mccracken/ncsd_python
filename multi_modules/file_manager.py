@@ -1,4 +1,4 @@
-""" module for dealing with reading/writing files for NCSD code """
+"""A module for dealing with reading/writing files for NCSD code."""
 
 from os.path import exists
 from . import formats
@@ -7,11 +7,12 @@ from .data_checker import manual_input_check, check_mfdp_read
 
 
 class FileManager(object):
-    """general class for dealing with files, has a general write function
+    """
+    A general class for dealing with files, has a general write function
+    that must be implemented for each file type.
 
-    I thought about making a general read function too, but decided against it
-    since each read function would be so different, and for some file types
-    we don't need a read function
+    Does not contain a general read function, you have to implement that
+    for each different file type if you want one.
     """
     def __init__(self, filetype, filename):
         # the empty case is just good practice, I don't think it's ever used
@@ -38,16 +39,21 @@ class FileManager(object):
             self.format_string = ""
 
     def param_dict(self):
+        """Returns a dictionary containing all file parameters"""
         return self.params.param_dict()
 
     def write(self):
+        """
+        Writes ``self.format_string.format(**self.param_dict())``
+        to ``self.filename``.
+        """
         with open(self.filename, 'w+') as open_file:
             open_file.write(self.format_string.format(**self.param_dict()))
 
 
 class MFDP(FileManager):
     """
-    class for reading / writing mfdp.dat files
+    Subclass of ``FileManager``, for reading / writing ``mfdp.dat`` files.
     """
     def __init__(self, filename="mfdp.dat", params=None):
         super(MFDP, self).__init__("MFDP", filename)
@@ -62,7 +68,11 @@ class MFDP(FileManager):
             raise IOError("must have either a params object or a filename")
 
     def read(self):
-        """this is old, sketchy, and deprecated! Don't use if you can avoid!"""
+        """
+        Warning:
+            This is old, sketchy, and not actually used!
+            I just kept it around in case you want to try something similar.
+        """
         # open file, grab text
         with open(self.filename, "r") as open_file:
             lines = open_file.readlines()
@@ -250,29 +260,29 @@ class MFDP(FileManager):
 
 
 class LocalBatch(FileManager):
-    """ class for writing batch files for NCSD code, on Cedar machine """
+    """Subclass of ``FileManager``, for ncsd batch files on local machine."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(LocalBatch, self).__init__("LOCAL_BATCH", filename)
         self.params = params
 
 
 class CedarBatch(FileManager):
-    """ class for writing batch files for NCSD code, on Cedar machine """
+    """Subclass of ``FileManager``, for ncsd batch files on cedar."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(CedarBatch, self).__init__("CEDAR_BATCH", filename)
         self.params = params
 
 
 class SummitBatch(FileManager):
-    """ class for writing batch files for NCSD code, on Summit machine """
+    """Subclass of ``FileManager``, for ncsd batch files on summit."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(SummitBatch, self).__init__("SUMMIT_BATCH", filename)
         self.params = params
 
 
 class Defaults(FileManager):
-    # it's not actually a type of file but I had some code for MFDP files
-    # that I wanted to use with defaults, so I made this
+    """Subclass of ``FileManager``,
+    for holding default parameters as if they were a file."""
     def __init__(
        self, filename="defaults", params=data_structures.DefaultParamsObj):
         super(Defaults, self).__init__("DEFAULT", filename)

@@ -1,5 +1,7 @@
-"""Module for calculating parameters for files from user input
-as well as the mfdp template file"""
+"""
+A module for calculating parameters to be used in ncsd run files,
+using manual parameters.
+"""
 
 import os
 from . import data_structures
@@ -7,7 +9,7 @@ from .formats import kappa_rename_format, potential_end_bit_format
 
 
 def Nmin_HO(Z):
-    """helper function for Ngs_func"""
+    """Helper function for Ngs_func"""
     N = 0
     Zrem = Z - 2
     Nmin = 0
@@ -19,15 +21,17 @@ def Nmin_HO(Z):
 
 
 def Ngs_func(Z, N):
-    """calculates Ngs: number of excitations in ground state
+    """
+    Calculates Ngs: number of excitations in the ground state
 
-    but I didn't want to call this function Ngs, so I could use
-    Ngs for the variable later"""
+    I didn't want to call this function Ngs, so I could use
+    Ngs as a variable later.
+    """
     return Nmin_HO(Z) + Nmin_HO(N)
 
 
 def nucleus(Z, N):
-    """returns the name of a nucleus in 'Li8' style"""
+    """Returns the name of a nucleus in 'Li8' style"""
     element_name = {
         1: "H",
         2: "He",
@@ -66,11 +70,17 @@ def nucleus(Z, N):
 
 def calc_params(run_dir, paths, man_params, default_params, machine):
     """
-        calc_params(MinParams instance, MFDPParams instance)
-        --> MFDPParams, BatchParams to be written into a folder for an NCSD run
+    Calculates all parameters needed for an NCSD run, using manual
+    parameters input by the user (man_params) and a set of default_params.
 
-        Calculates all parameters needed for an NCSD run, using manual
-        parameters input by the user (man_params) and a set of defaults
+    - run_dir = the directory where the files will be stored
+    - paths = list containing
+      - interaction files directory
+      - path to ncsd executable
+      - path to output_exporter module
+
+    Returns MFDPParams, BatchParams objects,
+    to be written into a folder for an NCSD run.
     """
     int_dir = paths[0]
     ncsd_path = paths[1]
@@ -190,7 +200,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
 
     # a few functions for converting kappa values to the formats we want
     def kappa_D(kappa_given):
-        """2.0 --> 0.200D-04"""
+        """Reformats a kappa value, e.g. 2.0 --> 0.200D-04"""
         kappa_e4 = kappa_given * pow(10, -4)
         kappa_scientific = "%.2E" % (kappa_e4)
         kappa_D = kappa_scientific.replace("E", "D")
@@ -200,7 +210,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
         return kappa
 
     def kappa_em(kappa_given):
-        """2.0 --> 2em5"""
+        """Reformats a kappa value, e.g. 2.0 --> 2em5"""
         return str(int(kappa_given)) + "em" + "5"
 
     # get numerical kappa values and create mv lines from those

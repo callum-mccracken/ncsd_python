@@ -1,6 +1,8 @@
 """
-the module that calls everything once we have the input. This just makes the
-ncsd_multi.py file look cleaner.
+Once we grab input from ``ncsd_multi.py``, this module actually processes it.
+
+- prepares input
+
 """
 # built-in modules
 from os import system, chdir, mkdir, symlink
@@ -15,6 +17,10 @@ from .file_manager import MFDP, CedarBatch, SummitBatch, LocalBatch, Defaults
 
 
 def prepare_input(m_params):  # m_params for manual params
+    """
+    Takes manual input (ManParams instance), and parses it into a format
+    that is usable by the functions that run the ncsd code.
+    """
     print("preparing input to be written to files")
     m_dict = m_params.param_dict()
     # make one set of inputs for each run
@@ -55,15 +61,18 @@ def prepare_input(m_params):  # m_params for manual params
 
 
 def create_dirs(defaults, dict_list, paths, machine):
+    """
+    Creates directories which hold ncsd run files.
+
+    Returns paths to batch scripts in each directory. Run these to run ncsd.
+    """
     print("creating directories to store run files")
 
     # the creation of this function was mostly to get intellisense to chill
     def populate_dir(defaults, man_params, paths, machine):
         """
-            Each folder will need:
-            - mfdp.dat
-            - batch_ncsd
-            we'll create these from defaults + manual input
+        Creates directories with ``mfdp.dat`` and ``batch_ncsd`` files,
+        using both manual input and default parameters.
         """
         ncsd_path = paths[1]
         working_dir = paths[2]
@@ -143,7 +152,7 @@ def create_dirs(defaults, dict_list, paths, machine):
 
 
 def ncsd_multi_run(man_params, paths, machine, run=True):
-    """run ncsd multiple times with given parameters"""
+    """Run ncsd multiple times with given parameters."""
     # check manual input
     manual_input_check(man_params, machine, paths)
 

@@ -48,7 +48,11 @@ import matplotlib.pyplot as plt
 
 
 def write_xmgrace(input_data, save_dir, grace_plotter_path):
-    """creates a file which can be used by xmgrace"""
+    """
+    Creates a ``.agr`` file which can be plotted by ``xmgrace``,
+    or rather just a ``.grdt`` file,
+    which you have to convert to ``.agr`` using ``grace_plotter.exe``.
+    """
     # NOTE: "ex" prefix --> excitation energies (as opposed to binding energies)
 
     # let's create the datasets and axis labels first
@@ -174,7 +178,7 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
 
 
 def write_csv(input_data, save_dir):
-    """creates a csv file containing useful data, for easier parsing later"""
+    """Creates a csv file containing useful data, for easier parsing later"""
     # write titles
     file_string = ",".join(
         ["Title", "StateNum", "J", "repetition", "Parity", "Energy"]) + "\n"
@@ -222,7 +226,7 @@ def write_csv(input_data, save_dir):
 
 
 def matplotlib_plot(input_data, save_dir):
-    """makes a matplotlib style plot of our data"""
+    """Makes a matplotlib style plot of our data, saves as ``.png``"""
 
     energy_datasets = []
     axis_labels = []
@@ -299,7 +303,11 @@ def matplotlib_plot(input_data, save_dir):
 
 
 def export_data(data, save_dir, grace_plotter_path, out_type="xmgrace"):
-    # gives a bunch of different ways to produce output
+    """
+    Produces output in a bunch of different ways.
+
+    Valid output types: "xmgrace", "csv", "matplotlib"
+    """
     if out_type == "xmgrace":
         write_xmgrace(data, save_dir, grace_plotter_path)
     elif out_type == "csv":

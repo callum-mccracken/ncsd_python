@@ -1,12 +1,13 @@
 """
--contains function which gets important data from ncsd output files
--also contains a couple small functions for getting names of nuclei
+Contains function which reads data from ncsd output files.
+Also contains a couple small functions for getting names of nuclei.
 """
 
 from os.path import split
 
 
 def element_name(Z):
+    """Gets the name of an element, e.g. element_name(1) = "H"."""
     element_names = {
         1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N", 8: "O",
         9: "F", 10: "Ne", 11: "Na", 12: "Mg", 13: "Al", 14: "Si", 15: "P",
@@ -18,14 +19,15 @@ def element_name(Z):
 
 
 def nucleus_name(Z, N):
-    """returns the name of a nucleus in 'Li8' style"""
+    """Returns the name of a nucleus in 'Li8' style"""
     return element_name(Z) + str(Z+N)
 
 
 def read_ncsd_output(filename):
     """
-    eventually returns a dict of the form:
+    Parses ncsd output.
 
+    Eventually returns a dict of the form:
     ::
 
         dict = {
@@ -174,7 +176,10 @@ def read_ncsd_output(filename):
 
 
 def read_all_ncsd_output(real_paths):
-    """runs read_ncsd_output for many paths, tries to merge data"""
+    """
+    Runs read_ncsd_output for many paths in case you have a few different files,
+    tries to merge data at the end.
+    """
     # get data from first file
     overall_data = read_ncsd_output(real_paths[0])
 

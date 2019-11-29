@@ -1,14 +1,17 @@
-#!/usr/bin/env python3
 """
+Warning:
+    This module is pretty experimental, not super functional,
+    and not used by default anywhere.
+
 Contains functions for grabbing data from the Internet.
 
-TUNL:
-- we download the necessary pdf from TUNL
-- then look through the PDF and pick out important values using tabula
+From TUNL:
+- Download the necessary pdf from TUNL
+- Then look through the PDF and pick out important values using tabula
+- TUNL wasn't a great source since their data isn't very parse-able
 
-But TUNL wasn't a great source since their data isn't very parse-able
-
-Instead, use Brookhaven's site: nndc.bnl.gov 
+From Brookhaven:
+- It is pretty possible to get data from Brookhaven's site: nndc.bnl.gov 
 
 
 """
@@ -17,9 +20,9 @@ from os.path import join, realpath, split, exists
 from .ncsd_output_reader import element_name
 
 this_dir = split(realpath(__file__))[0]
-    
+
 def parse_tunl_pdf(pdf_url, pdf_save_path):
-    """returns Ex column of pdf from TUNL, without uncertainties"""
+    """Returns Ex column of the pdf from TUNL, without uncertainties"""
     # I've done something gross here by putting some imports inside functions
     # rather than up here... The reason for that is that some packages,
     # especially tabula, are not always going to be installed.
@@ -112,8 +115,10 @@ def parse_tunl_pdf(pdf_url, pdf_save_path):
 
 
 def get_tunl_data(calc_data):
-    """Function to get data from TUNL. Currently only gets energies,
-    but if you have any ideas about how to get J, T, parity let me know!"""
+    """
+    Function to get data from TUNL. Currently only gets energies.
+    If you have any ideas about how to get J, T, parity, please implement them!
+    """
     import urllib.request
     import requests
     from lxml import html
@@ -169,7 +174,7 @@ def get_tunl_data(calc_data):
 
 
 def get_bnl_data(calc_data):
-    """Function to get data from BNL"""
+    """Function to get data from Brookhaven National Labs"""
     from selenium import webdriver
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.common.by import By
@@ -311,7 +316,8 @@ def get_bnl_data(calc_data):
 
 
 def get_online_data_wrapper(calc_data, get_online_data):
-    """This tries to get online data,
+    """
+    This tries to get data from online,
     but doesn't break everything if it fails.
     Instead, filler data is returned.
     """
