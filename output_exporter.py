@@ -1,5 +1,15 @@
-"""Module for helping to deal with data from NCSD output files,
-and export that data to different formats."""
+"""
+output_exporter.py
+==================
+
+A module for helping to deal with data from NCSD output files,
+and export that data to different formats (e.g. png plots, xmgrace files).
+
+You can run this file by adjusting some parameters within it first,
+or by just running ``python output_exporter.py -f filename``, if you're okay
+with default values.
+
+"""
 
 from plot_modules import scraper
 from plot_modules import ncsd_output_reader

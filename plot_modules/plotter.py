@@ -19,8 +19,8 @@ When calling most of these functions, data must be of the form:
             <Nmax>: {
                 <state_num>: [
                     angular_momentum: float,
-                    repetition: integer,
-                    parity: integer,
+                    repetition: int,
+                    parity: int,
                     energy: float
                 ]
             }
@@ -30,8 +30,8 @@ When calling most of these functions, data must be of the form:
             "Expt": {
                 <state_num>: [
                     angular_momentum: float,
-                    repetition: integer,
-                    parity: integer,
+                    repetition: int,
+                    parity: int,
                     energy: float
                 ]
             }
