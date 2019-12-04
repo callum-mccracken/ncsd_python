@@ -13,10 +13,12 @@ def element_name(Z):
 
     Z:
         integer, number of protons
+
     ::
     
         >> element_name(1)
         H
+
     """
     element_names = {
         1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N", 8: "O",
@@ -37,10 +39,12 @@ def nucleus_name(Z, N):
 
     N:
         integer, number of neutrons
+
     ::
     
         >> nucleus_name(3, 5)
         Li8
+
     """
     return element_name(Z) + str(Z+N)
 
