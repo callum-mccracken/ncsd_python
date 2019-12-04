@@ -6,11 +6,13 @@ Warning:
 Contains functions for grabbing data from the Internet.
 
 From TUNL:
+
 - Download the necessary pdf from TUNL
 - Then look through the PDF and pick out important values using tabula
 - TUNL wasn't a great source since their data isn't very parse-able
 
 From Brookhaven:
+
 - It is pretty possible to get data from Brookhaven's site: nndc.bnl.gov
 
 
