@@ -1,13 +1,21 @@
 """
-output_exporter.py
+==================
+output_plotter.py
 ==================
 
 A module for helping to deal with data from NCSD output files,
-and export that data to different formats (e.g. png plots, xmgrace files).
+and saving that data to various formats (e.g. png plots, xmgrace files).
 
-You can run this file by adjusting some parameters within it first,
-or by just running ``python output_exporter.py -f filename``, if you're okay
-with default values.
+You can run this file by adjusting some parameters within it, and then running::
+
+    python output_plotter.py
+
+If you're okay with default values, you can run::
+
+    python output_plotter.py -f filename
+
+And if you ran ncsd with ncsd_multi.py, this file will be automatically
+called at the end of the batch script.
 
 """
 
@@ -18,8 +26,9 @@ from os.path import realpath, dirname, join, exists
 from os import mkdir
 import argparse
 
-# path to grace_spectra_plotter
+
 grace_plotter_path = realpath("grace_spectra_plotter.exe")
+"""path to grace_spectra_plotter.exe"""
 
 # if you're running this file on its own, edit the variables below!
 # but make sure to leave the function as-is, so you can still run with "-f"
@@ -103,7 +112,7 @@ def make_plot_files(
 
 if __name__ == "__main__":
     # add argument parser so we can call this with
-    # python output_exporter.py -f "filename"
+    # python output_plotter.py -f "filename"
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-f','--file', help='Filename', required=False, default=[])
     args = parser.parse_args()

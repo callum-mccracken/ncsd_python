@@ -5,7 +5,7 @@ using manual parameters.
 
 import os
 from . import data_structures
-from .formats import kappa_rename_format, potential_end_bit_format
+from .formats_multi import kappa_rename_format, potential_end_bit_format
 
 
 def Nmin_HO(Z):
@@ -77,14 +77,14 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
     - paths = list containing
       - interaction files directory
       - path to ncsd executable
-      - path to output_exporter module
+      - path to output_plotter module
 
     Returns MFDPParams, BatchParams objects,
     to be written into a folder for an NCSD run.
     """
     int_dir = paths[0]
     ncsd_path = paths[1]
-    output_exporter_filepath = paths[3]
+    output_plotter_filepath = paths[3]
     # for convenience of typing let's make a couple smaller variable names:
     m = man_params
     d = default_params
@@ -247,7 +247,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
             non_IT_Nmax=non_IT_Nmax,
             potential_end_bit=potential_end,
             output_file=output_file,
-            output_plotter=output_exporter_filepath
+            output_plotter=output_plotter_filepath
         )
     elif machine == "cedar":
         batch_parameters = data_structures.CedarBatchParams(
@@ -268,7 +268,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
             non_IT_Nmax=non_IT_Nmax,
             potential_end_bit=potential_end,
             output_file=output_file,
-            output_plotter=output_exporter_filepath
+            output_plotter=output_plotter_filepath
         )
     elif machine == "summit":
         batch_parameters = data_structures.SummitBatchParams(
@@ -287,7 +287,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
             non_IT_Nmax=non_IT_Nmax,
             potential_end_bit=potential_end,
             output_file=output_file,
-            output_plotter=output_exporter_filepath
+            output_plotter=output_plotter_filepath
         )
     else:
         raise ValueError("Invalid machine: "+machine)

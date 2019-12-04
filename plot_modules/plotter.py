@@ -39,7 +39,7 @@ When calling most of these functions, data must be of the form:
     }
 
 """
-from . import formats
+from . import formats_plot
 
 import os
 import numpy as np
@@ -72,7 +72,7 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
     for Nmax in sorted(c_spectrum.keys()):
         if Nmax in input_data["skip_Nmax"]:
             continue
-        title = formats.xmgrace_Nmax_title_format.format(Nmax=Nmax)
+        title = formats_plot.xmgrace_Nmax_title_format.format(Nmax=Nmax)
         # lines = string to hold the lines containing
         # [j, repetition, parity, energy]
         # that we're going to generate
@@ -86,16 +86,16 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
                 continue
             j, repetition, parity, energy = c_spectrum[Nmax][state_num]
             ex_energy = energy - state_1_energy
-            lines += formats.xmgrace_data_line_format.format(
+            lines += formats_plot.xmgrace_data_line_format.format(
                 j=j,repetition=repetition, parity=parity, energy=energy)
-            ex_lines += formats.xmgrace_data_line_format.format(
+            ex_lines += formats_plot.xmgrace_data_line_format.format(
                 j=j, repetition=repetition, parity=parity, energy=ex_energy)
 
-        data_string += formats.xmgrace_dataset_format.format(
+        data_string += formats_plot.xmgrace_dataset_format.format(
             title=title, lines=lines)
-        ex_data_string += formats.xmgrace_dataset_format.format(
+        ex_data_string += formats_plot.xmgrace_dataset_format.format(
             title=title, lines=ex_lines)
-        axis_labels += formats.xmgrace_axis_label_line.format(Nmax=Nmax)
+        axis_labels += formats_plot.xmgrace_axis_label_line.format(Nmax=Nmax)
     
     # experimental data, only 1 dataset.
     title = "Expt"
@@ -108,13 +108,13 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
         # note: state_1_energy is the ground state energy of the largest Nmax
         # (since we haven't changed it since the end of the last loop)
         ex_energy = energy - state_1_energy
-        lines += formats.xmgrace_data_line_format.format(
+        lines += formats_plot.xmgrace_data_line_format.format(
             j=j, repetition=repetition, parity=parity, energy=energy)
-        ex_lines += formats.xmgrace_data_line_format.format(
+        ex_lines += formats_plot.xmgrace_data_line_format.format(
             j=j, repetition=repetition, parity=parity, energy=ex_energy)
-    data_string += formats.xmgrace_dataset_format.format(
+    data_string += formats_plot.xmgrace_dataset_format.format(
         title=title, lines=lines)
-    ex_data_string += formats.xmgrace_dataset_format.format(
+    ex_data_string += formats_plot.xmgrace_dataset_format.format(
         title=title, lines=ex_lines)
     axis_labels += title
     
@@ -137,7 +137,7 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
     # write binding energy file
     with open(save_path, "w+") as open_file:
         open_file.write(
-            formats.xmgrace_format.format(
+            formats_plot.xmgrace_format.format(
                 num_spectra_plus_2 = num_spectra + 2,
                 num_states = num_states,
                 num_spectra = num_spectra,
@@ -152,7 +152,7 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
     # write excited file
     with open(ex_save_path, "w+") as open_file:
         open_file.write(
-            formats.xmgrace_format.format(
+            formats_plot.xmgrace_format.format(
                 num_spectra_plus_2 = num_spectra + 2,
                 num_states = num_states,
                 num_spectra = num_spectra,

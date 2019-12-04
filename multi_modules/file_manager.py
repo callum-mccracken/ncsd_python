@@ -1,7 +1,7 @@
 """A module for dealing with reading/writing files for NCSD code."""
 
 from os.path import exists
-from . import formats
+from . import formats_multi
 from . import data_structures
 from .data_checker import manual_input_check, check_mfdp_read
 
@@ -21,16 +21,16 @@ class FileManager(object):
         self.filename = filename
         if filetype == "MFDP":
             self.valid_keys = data_structures.mfdp_keys
-            self.format_string = formats.mfdp_format
+            self.format_string = formats_multi.mfdp_format
         elif filetype == "LOCAL_BATCH":
             self.valid_keys = data_structures.local_batch_keys
-            self.format_string = formats.local_batch_format
+            self.format_string = formats_multi.local_batch_format
         elif filetype == "CEDAR_BATCH":
             self.valid_keys = data_structures.cedar_batch_keys
-            self.format_string = formats.cedar_batch_format
+            self.format_string = formats_multi.cedar_batch_format
         elif filetype == "SUMMIT_BATCH":
             self.valid_keys = data_structures.summit_batch_keys
-            self.format_string = formats.summit_batch_format
+            self.format_string = formats_multi.summit_batch_format
         elif filetype == "DEFAULT":
             self.valid_keys = data_structures.default_keys
             self.format_string = ""

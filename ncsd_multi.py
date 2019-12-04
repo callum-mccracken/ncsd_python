@@ -1,13 +1,19 @@
 """
+==============
 ncsd_multi.py
 ==============
 
-A module to facilitate running ``ncsd`` with many nuclei
+A module to facilitate running ncsd with many nuclei.
 
-- takes sets of inputs for multiple ``ncsd`` runs. Then, for each run:
-    - makes a folder so each run's output is contained, copies ``.exe`` file
-    - makes a bunch of ``mfdp.dat`` files to complete each run
-    - runs each process at the end, if desired.
+It takes sets of inputs for multiple ncsd runs. Then, for each run:
+
+1. It makes a folder so each run's output is contained, copies ``.exe`` file.
+2. In each folder, creates a ``mfdp.dat`` file and a batch script.
+3. Runs each bash script at the end, if desired. Otherwise you run them.
+
+To run this file, manually change the values in this file then run::
+
+    python ncsd_multi.py
 
 """
 from os.path import realpath, dirname
@@ -16,23 +22,24 @@ import sys
 from multi_modules.data_structures import ManParams
 from multi_modules.ncsd_multi_run import ncsd_multi_run
 from multi_modules.data_checker import get_int_dir
-from output_exporter import __file__ as output_plotter_path
+from output_plotter import __file__ as output_plotter_path
 
-# change paths to suit your needs, but don't remove the "realpath"
-# empty string = current working directory, paths are relative to cwd
+
 ncsd_path = realpath("ncsd-it.exe")
 working_dir = realpath("")
 int_dir = realpath("../interactions/")
 # you can also get int_dir from environment variable INT_DIR:
 # int_dir = get_int_dir()
+"""
+Paths: change the values as needed, but don't remove the ``realpath``.
+Empty string = current working directory, relative paths are relative to there.
+"""
 
-# set machine name, make sure it's valid
-machine = "local"
-# machine must be one of "cedar", "summit", "local"
+machine = "cedar"
+"""
+Machine: must be one of "cedar", "summit", "local".
+"""
 
-# MANUAL PARAMETERS -- specify all as single parameter or list []
-# default parameters can be found at the bottom of data_structures.py
-# (which is in the sub_modules directory)
 man_params = ManParams(
     # nucleus details:
     Z=3,  # number of protons
@@ -69,10 +76,40 @@ man_params = ManParams(
     mem=80.0,  # memory, in GB
     n_nodes=1024  # number of nodes
 )
+"""
+Manual Parameters:
 
-if __name__ == "__main__":
+- specify all as single parameter or list []
+- if you use a list, we'll make N ncsd runs, where N is the maximum length
+  of a list made here.
+- list of attributes is in multi_modules/data_structures.py, ``man_keys``.
+- default parameters are at the bottom of multi_modules/data_structures.py
+"""
+
+def run(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
+    """
+    Runs NCSD code. The real heavy lifting is done in ncsd_multi_run.py.
+
+    Params:
+
+        man_params:
+            a data_structures.ManParams instance,
+            containing all the manual parameters you want to enter
+
+        int_dir: a path to the directory where you keep interaction files
+
+        ncsd_path: the path to the ncsd executable file
+
+        working_dir: the path to the directory in which you want to create
+        new directories for each run
+
+        machine: the name of the machine you're using, e.g. "cedar", "summit"
+    """
     sys.path.append(output_plotter_path)
     # sys.tracebacklimit = 0  # Suppresses tracebacks, if you want that
     paths = [int_dir, ncsd_path, working_dir, output_plotter_path]
     # set run=True to run all batch scripts
-    ncsd_multi_run(man_params, paths, machine, run=True)
+    ncsd_multi_run(man_params, paths, machine, run=run)
+
+if __name__ == "__main__":
+    run(man_params, int_dir, ncsd_path, working_dir, machine)
