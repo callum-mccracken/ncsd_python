@@ -1,7 +1,7 @@
 """
 Contains the Params class and subclasses for specific file types.
 """
-# all the required/allowed fields for each data structure
+
 man_keys = [
     "two_body_interaction",
     "Z",
@@ -27,6 +27,8 @@ man_keys = [
     "time",
     "potential_name",
     "n_nodes"]
+"""all manual input variables"""
+
 local_batch_keys = [
     "run_directory",
     "potential",
@@ -40,6 +42,8 @@ local_batch_keys = [
     "output_file",
     "output_plotter"
     ]
+"""all variables for batch file on local machine"""
+
 cedar_batch_keys = [
     "run_directory",
     "account",
@@ -60,6 +64,8 @@ cedar_batch_keys = [
     "output_file",
     "output_plotter"
     ]
+"""all variables for batch file on cedar"""
+
 summit_batch_keys = [
     "run_directory",
     "account",
@@ -78,6 +84,8 @@ summit_batch_keys = [
     "output_file",
     "output_plotter"
     ]
+"""all variables for batch file on summit"""
+
 mfdp_keys = [
     "output_file",
     "two_body_interaction",
@@ -128,6 +136,9 @@ mfdp_keys = [
     "gsn",
     "saved_pivot",
     "rmemavail"]
+"""all variables for mfdp.dat file"""
+
+
 default_keys = [
     "two_body_file_type",
     "N_min",
@@ -156,18 +167,19 @@ default_keys = [
     "gsn",
     "mem",
     "tasks_per_node"]
+"""all variables that are set by default"""
 
 
 class Params(object):
     """
-    The Params class is pretty much just an ``argparse.Namespace``,
+    The Params class is pretty much just an argparse.Namespace,
     except you can only have certain variables.
 
-    For example, ``mfdp.dat`` files have a field for ``Z``,
-    so a ``Params`` object for that file type should have an attribute
-    ``self.Z``.
+    For example, mfdp.dat files have a field for Z,
+    so a Params object for that file type should have an attribute
+    self.Z.
 
-    But if you tried to set ``self.z`` by accident it should raise an error.
+    But if you tried to set self.z by accident it should raise an error.
 
     This prevents accidentally setting the wrong attributes for a file type,
     or too many parameters, or too few.
@@ -214,7 +226,9 @@ class Params(object):
             raise ValueError(error_message)
 
     def param_dict(self):
-        """returns a dict with the same info contained in the Params object"""
+        """
+        Returns a dictionary with the same info contained in the Params object
+        """
         pdict = {}
         for key in self.valid_keys:
             pdict[key] = getattr(self, key)
@@ -222,39 +236,40 @@ class Params(object):
 
 
 class ManParams(Params):
-    """``Params`` subclass for manual input"""
+    """Params subclass for manual input"""
     def __init__(self, **kwargs):
         super(ManParams, self).__init__("MANUAL INPUT", **kwargs)
 
 
 class LocalBatchParams(Params):
-    """``Params`` subclass for local machine batch files"""
+    """Params subclass for local machine batch files"""
     def __init__(self, **kwargs):
         super(LocalBatchParams, self).__init__("LOCAL_BATCH", **kwargs)
 
 
 class CedarBatchParams(Params):
-    """``Params`` subclass for cedar batch files"""
+    """Params subclass for cedar batch files"""
     def __init__(self, **kwargs):
         super(CedarBatchParams, self).__init__("CEDAR_BATCH", **kwargs)
 
 
 class SummitBatchParams(Params):
-    """``Params`` subclass for summit batch files"""
+    """Params subclass for summit batch files"""
     def __init__(self, **kwargs):
         super(SummitBatchParams, self).__init__("SUMMIT_BATCH", **kwargs)
 
 
 class MFDPParams(Params):
-    """``Params`` subclass for ``mfdp.dat`` files"""
+    """Params subclass for mfdp.dat files"""
     def __init__(self, **kwargs):
         super(MFDPParams, self).__init__("MFDP", **kwargs)
 
 
 class DefaultParams(Params):
-    """``Params`` subclass for default parameters"""
+    """Params subclass for default parameters"""
     def __init__(self, **kwargs):
         super(DefaultParams, self).__init__("DEFAULT", **kwargs)
+
 
 DefaultParamsObj = DefaultParams(
     two_body_file_type=2,

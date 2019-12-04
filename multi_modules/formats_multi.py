@@ -1,7 +1,9 @@
 """
 Contains long strings representing file types, to de-clutter other modules.
 
-Note: double curly braces tell Python you mean a literal curly brace
+PS: if you're reading this online, this looks way better in the actual file
+
+PPS: double curly braces tell Python you mean a literal curly brace
 when you're formatting a string.
 E.g. "{a}, {b}, {{a}}".format(a=1, b=2) produces the string "1, 2, {a}"
 """
@@ -45,6 +47,7 @@ Effective operators:
 {rmemavail:3f}               ! memory per rank in GB in real(8)
 *******************************  End of input  *******************************
 """
+"""Format for mfdp.dat file"""
 
 local_batch_format = """#!/bin/bash
 cd {run_directory}
@@ -74,6 +77,7 @@ mv mfd.log mfd.log_{output_file}
 
 python {output_plotter} -f {output_file}
 """
+"""Format for local batch file"""
 
 cedar_batch_format = """#!/bin/bash
 #SBATCH --account={account}
@@ -113,6 +117,7 @@ mv mfd.log mfd.log_{output_file}
 
 python {output_plotter} -f {output_file}
 """
+"""Format for cedar batch file"""
 
 summit_batch_format = """#!/bin/bash
 
@@ -177,6 +182,8 @@ mv mfd.log mfd.log_{output_file}
 
 python {output_plotter} -f {output_file}
 """
+"""Format for summit batch file"""
+
 
 potential_end_bit_format = """
 for Nmax in {IT_Nmax}
@@ -188,5 +195,7 @@ N=$[$Nmax+$Ngs]
 {kappa_rename}
 done
 """
+"""the ``potential_end_bit`` of batch files"""
 
 kappa_rename_format = """mv mfdp_${{N}}_{kappa_D}.egv mfdp_${{N}}_{kappa_D}.egv_${{iNu}}_${{potential}}_Nmax${{Nmax}}.${{freq}}_IT_kmin{kappa_em}${{suf}}"""
+"""format for lines with the kappa renaming scheme"""

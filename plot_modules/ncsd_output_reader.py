@@ -1,5 +1,6 @@
 """
-Contains function which reads data from ncsd output files.
+Contains a function which reads data from ncsd output files.
+
 Also contains a couple small functions for getting names of nuclei.
 """
 
@@ -7,7 +8,15 @@ from os.path import split
 
 
 def element_name(Z):
-    """Gets the name of an element, e.g. element_name(1) = "H"."""
+    """
+    Gets the name of an element. Currently only works up to Z=30.
+
+    Z:
+        integer, number of protons
+
+    >> element_name(1)
+    H
+    """
     element_names = {
         1: "H", 2: "He", 3: "Li", 4: "Be", 5: "B", 6: "C", 7: "N", 8: "O",
         9: "F", 10: "Ne", 11: "Na", 12: "Mg", 13: "Al", 14: "Si", 15: "P",
@@ -19,7 +28,18 @@ def element_name(Z):
 
 
 def nucleus_name(Z, N):
-    """Returns the name of a nucleus in 'Li8' style"""
+    """
+    Returns the name of a nucleus.
+
+    Z:
+        integer, number of protons
+
+    N:
+        integer, number of neutrons
+
+    >> nucleus_name(3, 5)
+    Li8
+    """
     return element_name(Z) + str(Z+N)
 
 
@@ -27,8 +47,10 @@ def read_ncsd_output(filename):
     """
     Parses ncsd output.
 
-    Eventually returns a dict of the form:
-    ::
+    filename:
+        path to ncsd output file
+
+    Eventually returns a dictionary of the form::
 
         dict = {
             "element_name": "B",
@@ -91,14 +113,14 @@ def read_ncsd_output(filename):
             data_dict["calculated_spectrum"][Nmax] = {}
             # calculate parity
             # "natural"
-            if (N+Z)%2 == 1 and Nmax%2 == 0:
+            if (N+Z) % 2 == 1 and Nmax % 2 == 0:
                 parity = 1  # negative parity
-            elif (N+Z)%2 == 0 and Nmax%2 == 0:
+            elif (N+Z) % 2 == 0 and Nmax % 2 == 0:
                 parity = 0  # positive
             # "unnatural"
-            elif (N+Z)%2 == 1 and Nmax%2 == 1:
+            elif (N+Z) % 2 == 1 and Nmax % 2 == 1:
                 parity = 0
-            elif (N+Z)%2 == 0 and Nmax%2 == 1:
+            elif (N+Z) % 2 == 0 and Nmax % 2 == 1:
                 parity = 1
             else:
                 raise ValueError("What have you done?")
@@ -130,7 +152,7 @@ def read_ncsd_output(filename):
                 previous_nmax_section = {}
         if "State #" in line:
             # parse line for J, repetition, parity, E
-            line = line[len("State #")+1:] # to make word separation easier            
+            line = line[len("State #")+1:]  # to make word separation easier
             try:
                 state_num = int(words[2])
                 energy = float(words[5])
@@ -145,7 +167,7 @@ def read_ncsd_output(filename):
                 # we'll round these to the nearest 0.5
                 angular_momentum = round(float(words[7]) * 2) / 2
                 isospin = round(float(words[10]) * 2) / 2
-            
+
             # note we are grabbing the absolute binding energies, not relative!
 
             # get repetition number
@@ -156,7 +178,7 @@ def read_ncsd_output(filename):
             repetition = repetitions[angular_momentum]
             data_dict["calculated_spectrum"][Nmax][state_num] = [
                 angular_momentum, repetition, parity, energy]
-    
+
     # if we reach the end of the file and still have a non-empty
     # previous_nmax_section, we write that section into the data_dict
     # since the stuff we tried to read wasn't complete.
@@ -177,8 +199,11 @@ def read_ncsd_output(filename):
 
 def read_all_ncsd_output(real_paths):
     """
-    Runs read_ncsd_output for many paths in case you have a few different files,
-    tries to merge data at the end.
+    Runs read_ncsd_output for many paths in case you have a few different files
+    then tries to merge data at the end.
+
+    real_paths:
+        absolute paths to ncsd output files
     """
     # get data from first file
     overall_data = read_ncsd_output(real_paths[0])

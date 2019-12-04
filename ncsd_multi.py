@@ -86,30 +86,37 @@ Manual Parameters:
 - default parameters are at the bottom of multi_modules/data_structures.py
 """
 
+
 def run(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
     """
     Runs NCSD code. The real heavy lifting is done in ncsd_multi_run.py.
 
-    Params:
+    man_params:
+        a data_structures.ManParams instance,
+        containing all the manual parameters you want to enter
 
-        man_params:
-            a data_structures.ManParams instance,
-            containing all the manual parameters you want to enter
+    int_dir:
+        a path to the directory where you keep interaction files
 
-        int_dir: a path to the directory where you keep interaction files
+    ncsd_path:
+        the path to the ncsd executable file
 
-        ncsd_path: the path to the ncsd executable file
-
-        working_dir: the path to the directory in which you want to create
+    working_dir:
+        the path to the directory in which you want to create
         new directories for each run
 
-        machine: the name of the machine you're using, e.g. "cedar", "summit"
+    machine:
+        the name of the machine you're using, e.g. "cedar", "summit"
+
+    Returns:
+        Nothing, but does create files and optinally runs batch scripts.
     """
     sys.path.append(output_plotter_path)
     # sys.tracebacklimit = 0  # Suppresses tracebacks, if you want that
     paths = [int_dir, ncsd_path, working_dir, output_plotter_path]
     # set run=True to run all batch scripts
     ncsd_multi_run(man_params, paths, machine, run=run)
+
 
 if __name__ == "__main__":
     run(man_params, int_dir, ncsd_path, working_dir, machine)

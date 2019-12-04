@@ -1,5 +1,4 @@
 """A module for dealing with reading/writing files for NCSD code."""
-
 from os.path import exists
 from . import formats_multi
 from . import data_structures
@@ -53,7 +52,7 @@ class FileManager(object):
 
 class MFDP(FileManager):
     """
-    Subclass of ``FileManager``, for reading / writing ``mfdp.dat`` files.
+    Subclass of FileManager, for reading / writing mfdp.dat files.
     """
     def __init__(self, filename="mfdp.dat", params=None):
         super(MFDP, self).__init__("MFDP", filename)
@@ -260,28 +259,28 @@ class MFDP(FileManager):
 
 
 class LocalBatch(FileManager):
-    """Subclass of ``FileManager``, for ncsd batch files on local machine."""
+    """Subclass of FileManager, for ncsd batch files on local machine."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(LocalBatch, self).__init__("LOCAL_BATCH", filename)
         self.params = params
 
 
 class CedarBatch(FileManager):
-    """Subclass of ``FileManager``, for ncsd batch files on cedar."""
+    """Subclass of FileManager, for ncsd batch files on cedar."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(CedarBatch, self).__init__("CEDAR_BATCH", filename)
         self.params = params
 
 
 class SummitBatch(FileManager):
-    """Subclass of ``FileManager``, for ncsd batch files on summit."""
+    """Subclass of FileManager, for ncsd batch files on summit."""
     def __init__(self, filename="batch_ncsd", params=None):
         super(SummitBatch, self).__init__("SUMMIT_BATCH", filename)
         self.params = params
 
 
 class Defaults(FileManager):
-    """Subclass of ``FileManager``,
+    """Subclass of FileManager,
     for holding default parameters as if they were a file."""
     def __init__(
        self, filename="defaults", params=data_structures.DefaultParamsObj):

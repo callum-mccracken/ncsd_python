@@ -1,12 +1,10 @@
 """
-Once we grab input from ``ncsd_multi.py``, this module actually processes it.
+Once we grab input from ncsd_multi.py, this module actually processes it.
 """
-# built-in modules
 from os import system, chdir, mkdir, symlink
 from os.path import realpath, join, exists, relpath, dirname
 from shutil import rmtree
 
-# our modules
 from .data_structures import ManParams
 from .parameter_calculations import calc_params, nucleus
 from .data_checker import manual_input_check
@@ -15,8 +13,23 @@ from .file_manager import MFDP, CedarBatch, SummitBatch, LocalBatch, Defaults
 
 def prepare_input(m_params):  # m_params for manual params
     """
-    Takes manual input (ManParams instance), and parses it into a format
-    that is usable by the functions that run the ncsd code.
+    Takes manual input m_params (a ManParams instance),
+    and parses it into a format that is usable by the functions
+    that make the run directories.
+
+    Makes lists of length num_runs (longest length list in m_params) with
+    duplicates of the last element if there aren't enough.
+
+    For example, if num_runs is 4...
+
+    1 --> [1,1,1,1]
+
+    [1,2] --> [1,2,2,2]
+
+    This may be useful to know, in case if you thought
+
+    [1,2] --> [1,1,2,2] (wrong!)
+
     """
     print("preparing input to be written to files")
     m_dict = m_params.param_dict()
@@ -29,17 +42,6 @@ def prepare_input(m_params):  # m_params for manual params
 
     #  now length of longest list = number of unique runs
     num_runs = len(max(list(m_dict.values()), key=len))
-
-    """
-        Now for all other parameters make a list of length num_runs with
-        duplicates of the last element if there aren't enough.
-
-        For example, if num_runs is 4 and I've specified some parameter as...
-        1 --> [1,1,1,1]
-        [1,2] --> [1,2,2,2]
-
-        This may be counterintuitive if you wanted [1,2] --> [1,1,2,2]
-    """
 
     for key, value in m_dict.items():
         if len(value) != num_runs:  # it's also guaranteed < num_runs
@@ -62,14 +64,39 @@ def create_dirs(defaults, dict_list, paths, machine):
     Creates directories which hold ncsd run files.
 
     Returns paths to batch scripts in each directory. Run these to run ncsd.
+
+    defaults:
+        a data_structures.DefaultParams object, which stores default values
+
+    dict_list:
+        a list of ManParams objects, created from the original ManParams object
+
+    paths:
+        a list containing
+        [interactions_dir, ncsd_path, working_dir, output_plotter_path]
+
+    machine:
+        name of machine being used for this calculation, e.g. "cedar"
     """
     print("creating directories to store run files")
 
-    # the creation of this function was mostly to get intellisense to chill
     def populate_dir(defaults, man_params, paths, machine):
         """
-        Creates directories with ``mfdp.dat`` and ``batch_ncsd`` files,
+        Creates directories with mfdp.dat and batch files,
         using both manual input and default parameters.
+
+        defaults:
+            a data_structures.DefaultParams object, which stores default values
+
+        man_params:
+            a ManParams object containing variables for this ncsd run
+
+        paths:
+            a list containing
+            [interactions_dir, ncsd_path, working_dir, output_plotter_path]
+
+        machine:
+            name of machine being used for this calculation, e.g. "cedar"
         """
         ncsd_path = paths[1]
         working_dir = paths[2]
@@ -98,7 +125,7 @@ def create_dirs(defaults, dict_list, paths, machine):
 
         # be sure that all the batch files actually know where their exe is
         batch_params.ncsd_path = realpath(join(run_dir, "ncsd-it.exe"))
-        
+
         print("writing files")
         # copy ncsd-it.exe
         symlink(ncsd_path, batch_params.ncsd_path)
@@ -124,7 +151,7 @@ def create_dirs(defaults, dict_list, paths, machine):
         # but first make sure to convert output_plotter to a relative path
         batch_params.output_plotter = relpath(
             batch_params.output_plotter, run_dir)
-        
+
         if machine == "local":
             LocalBatch(filename=batch_path, params=batch_params).write()
         elif machine == "cedar":
@@ -149,7 +176,22 @@ def create_dirs(defaults, dict_list, paths, machine):
 
 
 def ncsd_multi_run(man_params, paths, machine, run=True):
-    """Run ncsd multiple times with given parameters."""
+    """
+    Run ncsd multiple times with given parameters.
+
+    man_params:
+        a ManParams object with possible lists of values for all ncsd runs
+
+    paths:
+        a list containing
+        [interactions_dir, ncsd_path, working_dir, output_plotter_path]
+
+    machine:
+        name of machine being used for this calculation, e.g. "cedar"
+
+    run:
+        boolean, whether or not to run the batch files at the end
+    """
     # check manual input
     manual_input_check(man_params, machine, paths)
 

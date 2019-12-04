@@ -1,4 +1,6 @@
-"""contains functions to check various sorts of data"""
+"""
+Contains functions to check various sorts of data.
+"""
 import sys
 from os.path import join, exists, split
 import os
@@ -7,7 +9,11 @@ from .parameter_calculations import Ngs_func
 
 
 def get_int_dir():
-    """check if INT_DIR environment variable exists, create it if not"""
+    """
+    Check if INT_DIR environment variable exists, create it if not.
+
+    Not used by default, but it's an option if you want it.
+    """
     try:
         int_dir = os.environ["INT_DIR"]
     except KeyError:
@@ -19,7 +25,18 @@ def get_int_dir():
 
 
 def manual_input_check(manual_params, machine, paths):
-    """checks manual input to ensure it is at least self-consistent"""
+    """
+    Checks manual input to ensure it is self-consistent.
+
+    manual_params:
+        a data_structures.ManParams object, filled with manual input variables
+
+    machine:
+        string designating which machine is being used
+
+    paths:
+        list containing: [interactions dir, ncsd exe path, working dir]
+    """
     print("checking manual input")
     m = manual_params  # so we don't have to type out manual_params everywhere
 
@@ -175,7 +192,16 @@ def manual_input_check(manual_params, machine, paths):
 
 
 def check_mfdp_read(mfdp_params):
-    """checks to see if mfdp data, read from a file, was ok"""
+    """
+    Checks to see if mfdp data, read from a file, was ok.
+
+    Note that this is not actually used now, since we don't try to parse
+    mfdp files anymore, it's just left around from when we did, in case
+    you want to use it for something later.
+
+    mfdp_params:
+        a data_structures.MFDPParams object
+    """
     print("opening mfdp file, checking data")
 
     # 3 body interaction?

@@ -11,7 +11,7 @@ From TUNL:
 - TUNL wasn't a great source since their data isn't very parse-able
 
 From Brookhaven:
-- It is pretty possible to get data from Brookhaven's site: nndc.bnl.gov 
+- It is pretty possible to get data from Brookhaven's site: nndc.bnl.gov
 
 
 """
@@ -20,6 +20,7 @@ from os.path import join, realpath, split, exists
 from .ncsd_output_reader import element_name
 
 this_dir = split(realpath(__file__))[0]
+
 
 def parse_tunl_pdf(pdf_url, pdf_save_path):
     """Returns Ex column of the pdf from TUNL, without uncertainties"""
@@ -32,9 +33,9 @@ def parse_tunl_pdf(pdf_url, pdf_save_path):
     import requests
     from lxml import html
     import tabula
-    print("\nThe feature to grab data from TUNL is still very experimental,\n"+\
-        "please ensure you end up with the right values!\n"+\
-        "Also be sure to manually adjust J and T values.\n\n")
+    print("\nThe feature to grab data from TUNL is still very experimental," +
+          "\nplease ensure you end up with the right values!" +
+          "\nAlso be sure to manually adjust J and T values.\n\n")
     print("downloading PDF")
     # saves url file to a local destination
     urllib.request.urlretrieve(pdf_url, pdf_save_path)
@@ -48,26 +49,26 @@ def parse_tunl_pdf(pdf_url, pdf_save_path):
         Ex_strings = df["Ex (MeV± keV)"]
     except KeyError:
         Ex_strings = df["E x"]
-    Ex_strings.dropna(inplace = True)  # drop all NaN entries
-    
+    Ex_strings.dropna(inplace=True)  # drop all NaN entries
+
     Exs = []  # to store the Ex values
     for Ex_string in list(Ex_strings):
         # there are so many things that could go wrong with this...
         # but let's try anyway!
-        
+
         # first off, sometimes we just get random integers.
         # let's ignore those by ensuring all lines have a decimal point
-        # except for sometimes the first value is zero and I assume we want that
+        # except for sometimes the first value is zero. I assume we want that
         if "." not in Ex_string and Ex_string != "0":
             continue
-        
+
         try:
             Ex = float(Ex_string)
             Exs.append(Ex)
             continue
         except ValueError:
             pass
-        # if we're still here, 
+        # if we're still here,
         # we could not convert string to float for some reason...
 
         # there are sometimes artifacts in the data from super/subscripts
@@ -85,7 +86,7 @@ def parse_tunl_pdf(pdf_url, pdf_save_path):
             Exs.append(Ex)
             continue
         except ValueError:
-            pass    
+            pass
 
         # remove uncertainties from the string
         if "±" in Ex_string:
@@ -123,11 +124,11 @@ def get_tunl_data(calc_data):
     import requests
     from lxml import html
     import tabula
-    
+
     # a place to save all the pdfs we download, we'll overwrite for new files
     save_dir = realpath(join(this_dir, '..'))
     pdf_save_path = join(save_dir, 'TUNL.pdf')
-    
+
     Z = calc_data["Z"]
     N = calc_data["N"]
     n_states = calc_data["n_states"]
@@ -149,26 +150,26 @@ def get_tunl_data(calc_data):
         link = element.attrib.get('href')
         if ".pdf" in link:
             possible_files.append(link)
-    
+
     # check that we only got one
     if len(possible_files) != 1:
         print("Possible PDF files found on this page:")
         print(possible_files)
         raise ValueError(
             "Wrong number of files found on TUNL: "+str(len(possible_files)))
-    
+
     # then take that file, open it, and look inside for values
     pdf_url = possible_files[0]
     Ex_values = parse_tunl_pdf(pdf_url, pdf_save_path)  # list of floats
-    
+
     # format the data for use later
     data = {
         "expt_spectrum": {
             "Expt": {
-                n+1: [1,1,1, Ex_values[n]]
-                for n in range(n_states) # assuming we want the first few
-            }       
-        }       
+                n+1: [1, 1, 1, Ex_values[n]]
+                for n in range(n_states)  # assuming we want the first few
+            }
+        }
     }
     return data
 
@@ -196,7 +197,7 @@ def get_bnl_data(calc_data):
     search_box.clear()
     search_box.send_keys(str(A))
     search_box.send_keys(Keys.RETURN)
-    
+
     # find the right box to click
     rows = (driver.find_elements_by_class_name("normrow-ensdf") +
             driver.find_elements_by_class_name("altrow-ensdf"))
@@ -225,7 +226,7 @@ def get_bnl_data(calc_data):
     for line in lines:
         line = line[len(prefix)+2:]  # ignore prefix
         line_info = line[:3]
-        
+
         # first line_info[0] says what kind of line it will be
         if line_info[0] == " ":
             line_type = 1
@@ -239,7 +240,7 @@ def get_bnl_data(calc_data):
         # line_info[2] must be "L" for it to matter
         if line_info[2] != "L":
             continue
-        
+
         # if line contains any greater than or less than symbols remove them
         line = line.replace("GE", "").replace("LE", "")
 
@@ -271,7 +272,7 @@ def get_bnl_data(calc_data):
                     parity = 1
                 else:
                     parity = -1
-                word = word[:-1] # chop off parity before trying to get J
+                word = word[:-1]  # chop off parity before trying to get J
             else:
                 parity = "?"
             # now get J, dealing with fractions if necessarity
@@ -294,7 +295,7 @@ def get_bnl_data(calc_data):
     calc_spectrum = calc_data["calculated_spectrum"]
 
     # output data format
-    online_dict = {"expt_spectrum": { "Expt": { } } }
+    online_dict = {"expt_spectrum": {"Expt": {}}}
     # in Expt the format will be:
     # state_num: [2J, 2T, parity, energy]
 
@@ -329,13 +330,14 @@ def get_online_data_wrapper(calc_data, get_online_data):
             data = func_map[src](calc_data)
             return data
         except Exception as e:
-            print("\nWarning raised when trying to get data from "+name_map[src])
+            print("\nWarning raised when trying to get data from " +
+                  name_map[src])
             print(e, "\n")
     # produce experimental spectrum
     print("Returning filler 'experimental' data")
     calc_spectrum = calc_data["calculated_spectrum"]
     nmax_max = max(calc_spectrum.keys())
-    filler_data = { "expt_spectrum": { "Expt": { } } }
+    filler_data = {"expt_spectrum": {"Expt": {}}}
     for state in sorted(calc_spectrum[nmax_max].keys()):
         filler_data["expt_spectrum"]["Expt"][state] = \
             calc_spectrum[nmax_max][state]
