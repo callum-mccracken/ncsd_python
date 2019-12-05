@@ -36,9 +36,10 @@ Empty string = current working directory, relative paths are relative to there.
 """
 
 machine = "cedar"
-"""
-Machine: must be one of "cedar", "summit", "local".
-"""
+"""Machine: must be one of "cedar", "summit", "local"."""
+
+run = True
+"""Do you want to run the code automatically? If so, set run=True"""
 
 man_params = ManParams(
     # nucleus details:
@@ -119,4 +120,4 @@ def run(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
 
 
 if __name__ == "__main__":
-    run(man_params, int_dir, ncsd_path, working_dir, machine)
+    run(man_params, int_dir, ncsd_path, working_dir, machine, run=run)
