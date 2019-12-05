@@ -23,7 +23,7 @@ called at the end of the batch script.
 from plot_modules import scraper
 from plot_modules import ncsd_output_reader
 from plot_modules import plotter
-from os.path import realpath, dirname, join, exists
+from os.path import realpath, dirname, exists
 from os import mkdir
 import argparse
 
