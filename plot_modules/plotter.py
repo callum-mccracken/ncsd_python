@@ -294,10 +294,6 @@ def matplotlib_plot(input_data, save_dir):
     # ax.yaxis.tick_right()
     ax.yaxis.set_tick_params(right=True, direction="in")
     ax.xaxis.set_tick_params(length=0)
-    padding = 2
-    e_min = int(round(np.amin(plot_arr)) - padding)
-    e_max = int(round(np.amax(plot_arr)) + padding)
-    plt.yticks(range(e_min, e_max+1))
     plt.xticks(np.arange(0.5, 2*len(plot_arr[0])-0.5, 2.0))
     ax.set_xticklabels(axis_labels)
 

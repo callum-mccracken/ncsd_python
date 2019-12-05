@@ -35,7 +35,7 @@ grace_plotter_path = realpath("grace_spectra_plotter.exe")
 """The path to grace_spectra_plotter.exe"""
 
 
-output_paths = ["/Users/callum/Desktop/rough_code/ncsd_python/example_files/Li8_n3lo-NN3Nlnl-srg2.0_Nmax0-10.20"]
+output_paths = ["/Users/callum/Desktop/npsm/_ncsd_output/Li8_n3lo-NN3Nlnl-srg2.0_Nmax0-10.20"]
 """List of paths to ncsd output files"""
 
 save_dir = None
@@ -46,7 +46,6 @@ save_dir: where to save the plot files, formatted as a string or None.
 - some other string = save to that directory, include a final slash
 
 """
-
 
 out_types = ["xmgrace", "matplotlib", "csv"]
 """
@@ -64,6 +63,7 @@ max_state = 1e100
 If you don't want a max state, set max_state to a huge number, e.g. 1e100"""
 
 # get_online_data sets whether or not the program tries to get data from online
+# probably keep this as False, unless you're experimenting
 get_online_data = False
 
 
@@ -108,6 +108,7 @@ def make_plot_files(
     # make sure the save directory exists
     if not exists(save_dir):
         mkdir(save_dir)
+    print("saving input to", save_dir)
 
     # grab input from output of ncsd
     ncsd_data = ncsd_output_reader.read_all_ncsd_output(output_paths)
