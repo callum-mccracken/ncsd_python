@@ -251,8 +251,9 @@ def matplotlib_plot(input_data, save_dir):
         path to a diretory where we should save our plots
     """
 
-    energy_datasets = []
+    energies = []
     axis_labels = []
+    line_labels = []
 
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
@@ -264,26 +265,35 @@ def matplotlib_plot(input_data, save_dir):
         if Nmax in input_data["skip_Nmax"]:
             continue
         axis_labels.append(str(Nmax)+"$\\hbar \\omega$")
-        dataset = []
+        e_list = []
         for state_num in sorted(c_spectrum[Nmax].keys()):
             if state_num > max_state:
                 continue
+            angular_momentum = int(c_spectrum[Nmax][state_num][0])
+            repetition = int(c_spectrum[Nmax][state_num][1])
+            parity = int(c_spectrum[Nmax][state_num][2])
             energy = float(c_spectrum[Nmax][state_num][3])
-            dataset.append(energy)
-        energy_datasets.append(dataset)
+            title = f"${angular_momentum}^{parity}$"
+            e_list.append(energy)
+        energies.append(e_list)
 
     # experimental data, only 1 dataset
     axis_labels.append("Expt")
-    dataset = []
+    e_list = []
     for state_num in sorted(e_spectrum["Expt"].keys()):
         if state_num > max_state:
             continue
+        angular_momentum = int(e_spectrum["Expt"][state_num][0])
+        parity = e_spectrum["Expt"][state_num][2]
+        parity = "+" if parity == "0" else "-"
         energy = float(e_spectrum["Expt"][state_num][3])
-        dataset.append(energy)
-    energy_datasets.append(dataset)
+        title = f"${angular_momentum}^{parity}$"
+        line_labels.append(title)
+        e_list.append(energy)
+    energies.append(e_list)
 
-    energy_datasets = np.array(energy_datasets)
-    plot_arr = energy_datasets.transpose()
+    energies = np.array(energies)
+    plot_arr = energies.transpose()
 
     # create figure
     f = plt.figure()
@@ -296,11 +306,9 @@ def matplotlib_plot(input_data, save_dir):
     ax.xaxis.set_tick_params(length=0)
     plt.xticks(np.arange(0.5, 2*len(plot_arr[0])-0.5, 2.0))
     ax.set_xticklabels(axis_labels)
+    plt.xlim(-1, 2*len(plot_arr[0])+1)
 
-    # TODO: do something with the title / element name and line labels
-    # TODO: make this prettier in general
-
-    for line in plot_arr:
+    for num, line in enumerate(plot_arr):
         # pick a colour for the line
         colour = np.random.rand(3,)
         for i, value in enumerate(line):
@@ -314,9 +322,11 @@ def matplotlib_plot(input_data, save_dir):
                 plt.plot([2*i+1, 2*i+2], [value, next_val],
                          c=colour, linestyle="dotted")
             # othewise we've reached the end of the list
+        plt.text(2*len(line) - 0.5, line[-1], line_labels[num])
 
     # save the plot
     filename = os.path.split(input_data["filename"])[-1]
+    plt.title(filename.split("_")[0] + " Bound States")
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax'
     plt.savefig(os.path.join(save_dir, filename+".png"))
     plt.savefig(os.path.join(save_dir, filename+".svg"))
