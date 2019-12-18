@@ -83,7 +83,6 @@ cedar_batch_format = """#!/bin/bash
 #SBATCH --account={account}
 #SBATCH --nodes={nodes}               # number of 48-cpu nodes
 #SBATCH --tasks-per-node={tasks_per_node}      # mpi tasks per node (max 48)
-#SBATCH --mem={mem}                 # to use full nodes, set this to zero
 #SBATCH --mem-per-cpu={mem_per_core}G     # memory per CPU
 #SBATCH --time={time}           # time (DD-HH:MM)
 #SBATCH --output={output}

@@ -49,7 +49,6 @@ cedar_batch_keys = [
     "nodes",
     "tasks_per_node",
     "mem_per_core",
-    "mem",
     "time",
     "output",
     "potential",
@@ -164,7 +163,6 @@ default_keys = [
     "gln",
     "gsp",
     "gsn",
-    "mem",
     "tasks_per_node"]
 """all variables that are set by default"""
 
@@ -296,6 +294,5 @@ DefaultParamsObj = DefaultParams(
     gln=0.0,
     gsp=5.586,
     gsn=-3.826,
-    mem=0,
     tasks_per_node=48
 )

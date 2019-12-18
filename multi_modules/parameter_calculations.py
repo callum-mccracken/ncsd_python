@@ -257,7 +257,6 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
             nodes=m.n_nodes,
             tasks_per_node=d.tasks_per_node,
             mem_per_core=int(m.mem),
-            mem=d.mem,
             time=cedar_time,
             output="ncsd-%J.out",
             potential=m.potential_name,
