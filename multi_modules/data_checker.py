@@ -4,7 +4,7 @@ Contains functions to check various sorts of data.
 import sys
 from os.path import join, exists
 import os
-
+import traceback
 
 def get_int_dir():
     """
@@ -118,8 +118,10 @@ def manual_input_check(manual_params, machine, paths):
             else:
                 sys.exit(0)
     except Exception as e:
-        print("Warning raised when parsing TBME filename:", e)
-        print("TBME filename:", tbme_filename)
+        print("Minor error caught while parsing TMBE filename.")
+        print("Printing traceback as if it had caused a crash:")
+        traceback.print_exc()
+        print("TBME filename that caused this error:", tbme_filename)
         print("We assume everything's fine, but double-check!\n")
 
     if three_body:
@@ -165,8 +167,10 @@ def manual_input_check(manual_params, machine, paths):
                 else:
                     sys.exit(0)
         except Exception as e:
-            print("Warning raised when parsing 3-body filename:", e)
-            print("3-body filename:", three_filename)
+            print("Minor error caught while parsing 3-body filename.")
+            print("Printing traceback as if it had caused a crash:")
+            traceback.print_exc()
+            print("3-body filename that caused the error:", three_filename)
             print("We assume everything's fine, but double-check!\n")
 
     # check there's at least kappa_points kappa values
@@ -274,7 +278,8 @@ def check_mfdp_read(mfdp_params):
         message = "gsn is always -3.826, not "+str(mfdp_params.gsn)
 
     # mod 2 checks
-    if ((mfdp_params.Z + mfdp_params.N) % 2) == 0:
+    Z, N = mfdp_params.ZN
+    if ((Z + N) % 2) == 0:
         if mfdp_params.total_2Jz != 0:
             message = ("Z + N is even, so total_2Jz must be 0, "
                        "not "+str(mfdp_params.total_2Jz))
