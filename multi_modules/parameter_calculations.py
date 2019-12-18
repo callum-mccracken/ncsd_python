@@ -89,11 +89,13 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
     m = man_params
     d = default_params
 
+    Z, N = m.ZN
+
     # first get nucleus name
-    nucleus_name = nucleus(m.Z, m.N)
+    nucleus_name = nucleus(Z, N)
 
     # we'll need Ngs later:
-    Ngs = Ngs_func(m.Z, m.N)
+    Ngs = Ngs_func(Z, N)
     # might as well calculate Nhw now too
     Nhw = m.Nmax_max + Ngs
     nhw_min = m.Nmax_IT + Ngs
@@ -108,19 +110,18 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
 
     # string that sets limits on how many nuclei can occupy certain shells
     occupation_string = ""
-    for N in range(m.N_1max + 1):
-        if N == 0:
+    for Nshell in range(m.N_1max + 1):
+        if Nshell == 0:
             line = " 0 2  0 2  0 4  "
-        elif N == 1:
+        elif Nshell == 1:
             line = " 0 6  0 6  0 12  "
         else:
             # N = shell index starting from 0, m.N = number of neutrons
-            p = m.Z if m.Z * N <= Nhw else int(Nhw / N)
-            n = m.N if m.N * N <= Nhw else int(Nhw / N)
-            p_plus_n = (m.Z + m.N) if (m.Z + m.N) * N <= Nhw else int(Nhw / N)
-            line = " 0 {p}  0 {n}  0 {p_plus_n}  ".format(
-                p=p, n=n, p_plus_n=p_plus_n)
-        line += "! N={N}".format(N=N)
+            p = Z if Z * N <= Nhw else int(Nhw / Nshell)
+            n = N if N * N <= Nhw else int(Nhw / Nshell)
+            p_plus_n = (Z + N) if (Z + N) * Nshell <= Nhw else int(Nhw / Nshell)
+            line = f" 0 {p}  0 {n}  0 {p_plus_n}  "
+        line += f"! N={Nshell}"
         if N != m.N_1max:
             line += "\n"
         occupation_string += line
@@ -137,14 +138,14 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
         # can calculate easily from min_params:
         two_body_interaction=two_path,
         two_body_file_type=m.two_body_interaction[5],
-        Z=m.Z,
-        N=m.N,
+        Z=Z,
+        N=N,
         hbar_omega=m.hbar_omega,
         Nhw=Nhw,
         N_1max=m.N_1max,
         N_12max=m.N_12max,
         parity=0 if (Nhw % 2 == 0) else 1,
-        total_2Jz=0 if ((m.Z + m.N) % 2 == 0) else 1,
+        total_2Jz=0 if ((Z + N) % 2 == 0) else 1,
         interaction_type=m.interaction_type,
         n_states=m.n_states,
         iterations_required=m.iterations_required,

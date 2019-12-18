@@ -4,8 +4,7 @@ Contains the Params class and subclasses for specific file types.
 
 man_keys = [
     "two_body_interaction",
-    "Z",
-    "N",
+    "ZN",
     "hbar_omega",
     "N_1max",
     "N_12max",
@@ -175,11 +174,11 @@ class Params(object):
     The Params class is pretty much just an argparse.Namespace,
     except you can only have certain variables.
 
-    For example, mfdp.dat files have a field for Z,
+    For example, mfdp.dat files have a field for ZN,
     so a Params object for that file type should have an attribute
-    self.Z.
+    self.ZN.
 
-    But if you tried to set self.z by accident it should raise an error.
+    But if you tried to set self.Z by accident it should raise an error.
 
     This prevents accidentally setting the wrong attributes for a file type,
     or too many parameters, or too few.

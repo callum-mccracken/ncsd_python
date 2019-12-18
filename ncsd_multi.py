@@ -26,7 +26,7 @@ from output_plotter import __file__ as output_plotter_path
 
 ncsd_path = realpath("ncsd-it.exe")
 working_dir = realpath("")
-int_dir = realpath("../interactions/")
+int_dir = realpath("../../8Li-9Li/random_code_files/")
 # you can also get these directories from
 # the environment variables INT_DIR and WORK_DIR:
 # int_dir = get_int_dir()
@@ -40,13 +40,12 @@ Relative paths = relative to current working directory.
 machine = "cedar"
 """machine must be one of "cedar", "summit", "local"."""
 
-run = True
+run = False
 """Do you want to run jobs automatically? If so, set run=True"""
 
 man_params = ManParams(
-    Z=3,  # number of protons
-    N=5,  # number of neutrons
-    hbar_omega=20,  # harmonic oscillator frequency
+    ZN=[(3, 5), (3,6)],  # tuples for (number of protons, number of neutrons)
+    hbar_omega=[15, 20],  # harmonic oscillator frequency
     N_1max=9,  # highest number of harmonic oscillator quanta for 1 nucleon
     N_12max=10,  # highest number of harmonic oscillator quanta for 2 nucleons
     # Nmax, in contrast to N_1max / N_12max, is the max number of oscillator
@@ -69,19 +68,26 @@ man_params = ManParams(
     potential_name="n3lo-NN3Nlnl-srg2.0",  # identifier for output files
 
     # 2-body interaction filename, must be within int_dir (defined above)
-    two_body_interaction="some_tbme_file",
+    two_body_interaction="TBMEA2srg-n3lo2.0_14.20_910",
 
     interaction_type=2,  # 2: 2-body, 3: 3-body, -3: 3-body with 2-body IT
     # if 3-body interaction, change these two, if not they will be ignored
     N_123max=11,  # highest number of harmonic oscillator quanta for 3 nucleons
-    three_body_interaction="some_three_body_file",  # must be within int_dir!
+    three_body_interaction="v3trans_J3T3.int_3NFlocnonloc-srg2.0_from24_220_11109.20_comp",  # must be within int_dir!
 )
 """
 Manual Parameters:
 
 - specify all as single parameter or list []
-- if you use a list, we'll make N ncsd runs, where N is the maximum length
-  of a list made here.
+- if there are lists, we will make runs with all possible combinations,
+  e.g. if ZN=[(3,5), (3,6)] and hbar_omega = [15, 20]
+  we will make runs for::
+
+    Z=3 N=5 hw=15
+    Z=3 N=5 hw=20
+    Z=3 N=6 hw=15
+    Z=3 N=6 hw=20
+
 - list of attributes is in multi_modules/data_structures.py, ``man_keys``.
 - default parameters are at the bottom of multi_modules/data_structures.py
 """

@@ -4,7 +4,7 @@ Once we grab input from ncsd_multi.py, this module actually processes it.
 from os import system, chdir, mkdir, symlink
 from os.path import realpath, join, exists, relpath, dirname
 from shutil import rmtree
-
+import itertools
 from .data_structures import ManParams
 from .parameter_calculations import calc_params, nucleus
 from .data_checker import manual_input_check
@@ -17,45 +17,43 @@ def prepare_input(m_params):  # m_params for manual params
     and parses it into a format that is usable by the functions
     that make the run directories.
 
-    Makes lists of length num_runs (longest length list in m_params) with
-    duplicates of the last element if there aren't enough.
+    If any parameters are lists, we take all possible combinations of
+    parameters
 
-    For example, if num_runs is 4...
+    For example, if ZN = [(3,4),(3,5)], hw = [15, 20] and all other variables
+    are not lists, we'll do runs for::
 
-    1 --> [1,1,1,1]
-
-    [1,2] --> [1,2,2,2]
-
-    This may be useful to know, in case if you thought
-
-    [1,2] --> [1,1,2,2] (wrong!)
+        Z = 3, N = 4, hw = 15
+        Z = 3, N = 4, hw = 20
+        Z = 3, N = 5, hw = 15
+        Z = 3, N = 5, hw = 20
 
     """
     print("preparing input to be written to files")
+    # get all parameters from the ManParams object, in dict form
     m_dict = m_params.param_dict()
-    # make one set of inputs for each run
 
     # make all parameters into lists
     for key, value in m_dict.items():
         if type(value) != list:
             m_dict[key] = [value]
 
-    #  now length of longest list = number of unique runs
-    num_runs = len(max(list(m_dict.values()), key=len))
+    # get all keys and values from the dictionary, where the values are lists
+    keys, lists = [], []
+    for k, l in m_dict.items():
+        keys.append(k)
+        lists.append(l)
 
-    for key, value in m_dict.items():
-        if len(value) != num_runs:  # it's also guaranteed < num_runs
-            # append the last element until it's the right length
-            for i in range(len(value), num_runs):
-                m_dict[key].append(value[-1])
-
-    # now make one dict for each mfdp file:
+    # now convert the dict which contains lists (m_dict)
+    # into a list of dicts, where the dicts hold only single values (dict_list)
     dict_list = []
-    for i in range(num_runs):
-        new_dict = {}
-        for key, value in m_dict.items():
-            new_dict[key] = value[i]
-        dict_list.append(new_dict)
+    for value_list in itertools.product(*lists):
+        d = {}
+        for i, keypair in enumerate(m_dict.items()):
+            key, _ = keypair
+            d[key] = value_list[i]
+        dict_list.append(d)
+
     return dict_list
 
 
@@ -104,7 +102,7 @@ def create_dirs(defaults, dict_list, paths, machine):
         chdir(working_dir)
 
         # make a directory for run
-        run_name = nucleus(man_params.Z, man_params.N)
+        run_name = nucleus(*man_params.ZN)+f"_{man_params.hbar_omega}"
         run_dir = realpath(join(working_dir, run_name))
         # ensure we don't overwrite
         if exists(run_dir):
@@ -192,14 +190,16 @@ def ncsd_multi_run(man_params, paths, machine, run=True):
     run:
         boolean, whether or not to run the batch files at the end
     """
-    # check manual input
-    manual_input_check(man_params, machine, paths)
-
     # get default parameters
     defaults = Defaults()
 
     # list of dicts which contain parameters for each run
     list_of_dicts = prepare_input(man_params)
+
+    for d in list_of_dicts:
+        # check input
+        manual_input_check(ManParams(**d), machine, paths)
+
     # creates directories with runnable batch files
     batch_paths = create_dirs(defaults, list_of_dicts, paths, machine)
 
