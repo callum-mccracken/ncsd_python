@@ -15,7 +15,7 @@ def element_name(Z):
         integer, number of protons
 
     ::
-    
+
         >> element_name(1)
         H
 
@@ -41,7 +41,7 @@ def nucleus_name(Z, N):
         integer, number of neutrons
 
     ::
-    
+
         >> nucleus_name(3, 5)
         Li8
 
