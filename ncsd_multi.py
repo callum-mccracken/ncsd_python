@@ -88,7 +88,7 @@ Manual Parameters:
 """
 
 
-def run(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
+def run_ncsd(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
     """
     Runs NCSD code. The real heavy lifting is done in ncsd_multi_run.py.
 
@@ -120,4 +120,4 @@ def run(man_params, int_dir, ncsd_path, working_dir, machine, run=True):
 
 
 if __name__ == "__main__":
-    run(man_params, int_dir, ncsd_path, working_dir, machine, run=run)
+    run_ncsd(man_params, int_dir, ncsd_path, working_dir, machine, run=run)
