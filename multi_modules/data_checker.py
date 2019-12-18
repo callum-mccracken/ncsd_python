@@ -2,10 +2,8 @@
 Contains functions to check various sorts of data.
 """
 import sys
-from os.path import join, exists, split
+from os.path import join, exists
 import os
-import re
-from .parameter_calculations import Ngs_func
 
 
 def get_int_dir():
@@ -19,9 +17,24 @@ def get_int_dir():
     except KeyError:
         int_dir = input("Enter the (full path) directory "
                         "where your interactions are stored: ")
-        os.system("echo 'export INT_DIR=\""+int_dir+"\"\n' >> ~/.bash_profile")
+        os.system(f"echo 'export INT_DIR=\"{int_dir}\"\n' >> ~/.bash_profile")
         os.system(". ~/.bash_profile")
     return int_dir
+
+
+def get_work_dir():
+    """
+    Check if WORK_DIR environment variable exists, create it if not.
+
+    Not used by default, but it's an option if you want it.
+    """
+    try:
+        wrk_dir = os.environ["WORK_DIR"]
+    except KeyError:
+        wrk_dir = input("Enter the full path to your working directory: ")
+        os.system(f"echo 'export WORK_DIR=\"{wrk_dir}\"\n' >> ~/.bash_profile")
+        os.system(". ~/.bash_profile")
+    return wrk_dir
 
 
 def manual_input_check(manual_params, machine, paths):

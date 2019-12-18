@@ -16,66 +16,65 @@ To run this file, manually change the values in this file then run::
     python ncsd_multi.py
 
 """
-from os.path import realpath, dirname
-from os import chdir
+from os.path import realpath
 import sys
 from multi_modules.data_structures import ManParams
 from multi_modules.ncsd_multi_run import ncsd_multi_run
-from multi_modules.data_checker import get_int_dir
+from multi_modules.data_checker import get_int_dir, get_work_dir
 from output_plotter import __file__ as output_plotter_path
 
 
 ncsd_path = realpath("ncsd-it.exe")
 working_dir = realpath("")
 int_dir = realpath("../interactions/")
-# you can also get int_dir from environment variable INT_DIR:
+# you can also get these directories from
+# the environment variables INT_DIR and WORK_DIR:
 # int_dir = get_int_dir()
+# working_dir = get_work_dir()
 """
-Paths: change the values as needed, but don't remove the ``realpath``.
-Empty string = current working directory, relative paths are relative to there.
+Paths: change the values as needed, but don't remove the ``realpath``
+(it converts relative --> absolute paths).
+Relative paths = relative to current working directory.
 """
 
 machine = "cedar"
-"""Machine: must be one of "cedar", "summit", "local"."""
+"""machine must be one of "cedar", "summit", "local"."""
 
 run = True
-"""Do you want to run the code automatically? If so, set run=True"""
+"""Do you want to run jobs automatically? If so, set run=True"""
 
 man_params = ManParams(
-    # nucleus details:
     Z=3,  # number of protons
     N=5,  # number of neutrons
     hbar_omega=20,  # harmonic oscillator frequency
-    N_1max=9,  # highest possible excited state of 1 nucleon
-    N_12max=10,  # highest possible state of 2 nucleons, added
-    # if 3-body, change this and interaction name, otherwise leave them be
-    N_123max=11,  # highest possible state of 3 nucleons, added
-
-    # interaction names, these files must be within int_dir
-    two_body_interaction="some_tbme_file",
-    three_body_interaction="some_three_body_file",
-    # potential is just for naming purposes, does not affect calculations
-    potential_name="some_potential",
-
-    # computation-related parameters:
-    Nmax_min=0,  # Nmax_min and Nmax_max control how long the program runs
+    N_1max=9,  # highest number of harmonic oscillator quanta for 1 nucleon
+    N_12max=10,  # highest number of harmonic oscillator quanta for 2 nucleons
+    # Nmax, in contrast to N_1max / N_12max, is the max number of oscillator
+    # quanta allowed above the lowest Pauli-allowed state for the nucleus
+    Nmax_min=0,  # Nmax_min and Nmax_max are lower/upper bounds for Nmax
     Nmax_max=10,  # e.g. 0 - 8 gives eigenvectors for Nmax = 0,2,...,8
-    Nmax_IT=6,  # Nmax for Importance Truncation
-    interaction_type=2,  # make sure abs(interaction_type)==3 for 3-body
+    Nmax_IT=6,  # Nmax value at which importance truncation starts
     n_states=1,  # number of final states (= number of energy values)
     iterations_required=10,  # number of iterations required in Lanczos step
     irest=0,  # restart? 4 = yes, 0 = no
-    nhw_restart=-1,  # not sure what this one does
+    nhw_restart=-1,  # nhw restart? -1 or 1, I think
     kappa_points=4,  # number of kappa values
-    # make sure you keep this next one written as a string!
-    kappa_vals="2.0 3.0 5.0 10.0",  # values for kappa, in increasing order
+    # note kappa values are x10^-4
+    kappa_vals="2.0 3.0 5.0 10.0",  # kappa values, increasing, use a string!
     kappa_restart=-1,  # -1 for false, else some value between 1 and 4
     saved_pivot="F",  # "T" or "F", whether or not to use the saved pivot
-
-    # machine-related parameters:
     time="0 8 0",  # runtime, "days hours minutes". Will be formatted later
     mem=80.0,  # memory, in GB
-    n_nodes=1024  # number of nodes
+    n_nodes=1024,  # number of nodes
+    potential_name="n3lo-NN3Nlnl-srg2.0",  # identifier for output files
+
+    # 2-body interaction filename, must be within int_dir (defined above)
+    two_body_interaction="some_tbme_file",
+
+    interaction_type=2,  # 2: 2-body, 3: 3-body, -3: 3-body with 2-body IT
+    # if 3-body interaction, change these two, if not they will be ignored
+    N_123max=11,  # highest number of harmonic oscillator quanta for 3 nucleons
+    three_body_interaction="some_three_body_file",  # must be within int_dir!
 )
 """
 Manual Parameters:
