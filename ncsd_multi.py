@@ -44,7 +44,7 @@ run = False
 """Do you want to run jobs automatically? If so, set run=True"""
 
 man_params = ManParams(
-    ZN=[(3, 5), (3,6)],  # tuples for (number of protons, number of neutrons)
+    ZN=[(3, 5), (3, 6)],  # tuples for (number of protons, number of neutrons)
     hbar_omega=[15, 20],  # harmonic oscillator frequency
     N_1max=9,  # highest number of harmonic oscillator quanta for 1 nucleon
     N_12max=10,  # highest number of harmonic oscillator quanta for 2 nucleons
