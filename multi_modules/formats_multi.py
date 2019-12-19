@@ -36,8 +36,8 @@ Restart option:
 Importance truncation:
   {nhw0}  {nhw_min:2d}  {Nhw:2d}  {nhw_restart:2d}      ! nhw0, nhw_min (start IT), nhw_max=nhw, nhw_restart
   {kappa_points}  {cmin}  {kappa_restart}         !kappa_points,cmin=factor*kappa,kappa_restart=-1 for new calc.
-  {kappa_vals}  ! kappa(1E-5)
-  {convergence_delta}          	     ! convergence delta in keV (not implemented)
+  {kappa_vals}  ! kappa(x10^-4)
+  {convergence_delta}               ! convergence delta in keV (not implemented)
 {three_body_interaction}
 {N_1max:2d} {N_12max:2d} {N_123max:2d}             ! N1B N2B N3B
 Effective operators:
