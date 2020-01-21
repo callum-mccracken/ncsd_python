@@ -122,7 +122,7 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
             p_plus_n = (Z + N) if (Z + N) * Nshell <= Nhw else int(Nhw / Nshell)
             line = f" 0 {p}  0 {n}  0 {p_plus_n}  "
         line += f"! N={Nshell}"
-        if N != m.N_1max:
+        if Nshell != m.N_1max:
             line += "\n"
         occupation_string += line
 
