@@ -131,9 +131,10 @@ date
 
 #module loading needs cuda and for some
 #reason also lapack as a separate load
-module load cuda
-module load netlib-lapack/3.8.0
+module unload darshan-runtime
 module load gcc
+module load netlib-lapack/3.8.0
+module load cuda
 module load python/3.7.0-anaconda3-5.3.0
 
 #SUMMIT job submission is based on "resource sets"
