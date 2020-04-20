@@ -112,16 +112,22 @@ def calc_params(run_dir, paths, man_params, default_params, machine):
     occupation_string = ""
     for Nshell in range(m.N_1max + 1):
         if Nshell == 0:
-            line = " 0 2  0 2  0 4  "
+            p = 2
+            n = 2
+            p_plus_n = 4
         elif Nshell == 1:
-            line = " 0 6  0 6  0 12  "
+            p = 6
+            n = 6
+            p_plus_n = 12
         else:
             # N = shell index starting from 0, m.N = number of neutrons
             p = Z if Z * N <= Nhw else int(Nhw / Nshell)
             n = N if N * N <= Nhw else int(Nhw / Nshell)
             p_plus_n = (Z + N) if (Z + N) * Nshell <= Nhw else int(Nhw / Nshell)
-            line = f" 0 {p}  0 {n}  0 {p_plus_n}  "
-        line += f"! N={Nshell}"
+        p = min(p, (N+1)*(N+2))
+        n = min(n, (N+1)*(N+2))
+        p_plus_n = min(p_plus_n, 2*(N+1)*(N+2))
+        line = f" 0 {p}  0 {n}  0 {p_plus_n}  ! N={Nshell}"
         if Nshell != m.N_1max:
             line += "\n"
         occupation_string += line
