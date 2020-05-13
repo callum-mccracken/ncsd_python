@@ -220,7 +220,7 @@ def write_csv(input_data, save_dir):
             repetition = str(c_spectrum[Nmax][state_num][1])
             parity = str(c_spectrum[Nmax][state_num][2])
             energy = str(c_spectrum[Nmax][state_num][3])
-            ex_energy = energy - state_1_energy
+            ex_energy = str(float(energy) - state_1_energy)
             lines += ",".join(
                 [title, str(state_num), j, repetition, parity, energy]) + "\n"
             ex_lines += ",".join(
@@ -240,7 +240,7 @@ def write_csv(input_data, save_dir):
         repetition = str(e_spectrum[title][state_num][1])
         parity = str(e_spectrum[title][state_num][2])
         energy = str(e_spectrum[title][state_num][3])
-        ex_energy = energy - state_1_energy
+        ex_energy = str(float(energy) - state_1_energy)
         lines += ",".join(
             [title, str(state_num), j, repetition, parity, energy]) + "\n"
         ex_lines += ",".join(
