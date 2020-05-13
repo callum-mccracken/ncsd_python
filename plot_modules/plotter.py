@@ -196,7 +196,9 @@ def write_csv(input_data, save_dir):
     """
     # write titles
     file_string = ",".join(
-        ["Title", "StateNum", "J", "repetition", "Parity", "Energy"]) + "\n"
+        ["Title", "StateNum", "J", "repetition", "Parity", "AbsEnergy"]) + "\n"
+    ex_file_string = ",".join(
+        ["Title", "StateNum", "J", "repetition", "Parity", "ExcEnergy"]) + "\n"
 
     # let's create the datasets and axis labels first
     c_spectrum = input_data["calculated_spectrum"]
@@ -209,6 +211,8 @@ def write_csv(input_data, save_dir):
             continue
         title = "Nmax"+str(Nmax)
         lines = ""
+        ex_lines = ""
+        state_1_energy = c_spectrum[Nmax][1][3]
         for state_num in sorted(c_spectrum[Nmax].keys()):
             if state_num > max_state:
                 continue
@@ -216,13 +220,19 @@ def write_csv(input_data, save_dir):
             repetition = str(c_spectrum[Nmax][state_num][1])
             parity = str(c_spectrum[Nmax][state_num][2])
             energy = str(c_spectrum[Nmax][state_num][3])
+            ex_energy = energy - state_1_energy
             lines += ",".join(
                 [title, str(state_num), j, repetition, parity, energy]) + "\n"
+            ex_lines += ",".join(
+                [title, str(state_num), j, repetition, parity, ex_energy]) + "\n"
+
         file_string += lines
+        ex_file_string += ex_lines
 
     # experimental data, only 1 dataset
     title = "Expt"
     lines = ""
+    ex_lines = ""
     for state_num in sorted(e_spectrum[title].keys()):
         if state_num > max_state:
             continue
@@ -230,14 +240,21 @@ def write_csv(input_data, save_dir):
         repetition = str(e_spectrum[title][state_num][1])
         parity = str(e_spectrum[title][state_num][2])
         energy = str(e_spectrum[title][state_num][3])
+        ex_energy = energy - state_1_energy
         lines += ",".join(
             [title, str(state_num), j, repetition, parity, energy]) + "\n"
+        ex_lines += ",".join(
+            [title, str(state_num), j, repetition, parity, ex_energy]) + "\n"
     file_string += lines
+    ex_file_string += ex_lines
     # now save
     filename = os.path.split(input_data["filename"])[-1]
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.csv'
     with open(os.path.join(save_dir, filename), "w+") as open_file:
         open_file.write(file_string)
+    ex_filename = filename.replace(".csv", "_excited.csv")
+    with open(os.path.join(save_dir, ex_filename), "w+") as open_file:
+        open_file.write(ex_file_string)
 
 
 def matplotlib_plot(input_data, save_dir):
@@ -252,6 +269,7 @@ def matplotlib_plot(input_data, save_dir):
     """
 
     energies = []
+    ex_energies = []
     axis_labels = []
     line_labels = []
 
@@ -266,6 +284,8 @@ def matplotlib_plot(input_data, save_dir):
             continue
         axis_labels.append(str(Nmax)+"$\\hbar \\omega$")
         e_list = []
+        ex_e_list = []
+        state_1_energy = c_spectrum[Nmax][1][3]
         for state_num in sorted(c_spectrum[Nmax].keys()):
             if state_num > max_state:
                 continue
@@ -273,13 +293,17 @@ def matplotlib_plot(input_data, save_dir):
             repetition = int(c_spectrum[Nmax][state_num][1])
             parity = int(c_spectrum[Nmax][state_num][2])
             energy = float(c_spectrum[Nmax][state_num][3])
+            ex_energy = energy - state_1_energy
             title = f"${angular_momentum}^{parity}$"
             e_list.append(energy)
+            ex_e_list.append(ex_energy)
         energies.append(e_list)
+        ex_energies.append(ex_e_list)
 
     # experimental data, only 1 dataset
     axis_labels.append("Expt")
     e_list = []
+    ex_e_list = []
     for state_num in sorted(e_spectrum["Expt"].keys()):
         if state_num > max_state:
             continue
@@ -287,18 +311,23 @@ def matplotlib_plot(input_data, save_dir):
         parity = e_spectrum["Expt"][state_num][2]
         parity = "+" if parity == "0" else "-"
         energy = float(e_spectrum["Expt"][state_num][3])
+        ex_energy = energy - state_1_energy
         title = f"${angular_momentum}^{parity}$"
         line_labels.append(title)
         e_list.append(energy)
+        ex_e_list.append(ex_energy)
     energies.append(e_list)
+    ex_energies.append(ex_e_list)
 
     energies = np.array(energies)
+    ex_energies = np.array(ex_energies)
     plot_arr = energies.transpose()
+    ex_plot_arr = energies.transpose()
 
     # create figure
     f = plt.figure()
     ax = f.add_subplot(111)
-    plt.ylabel("$E_x$ [MeV]")
+    plt.ylabel("$E$ [MeV]")
 
     # play around with ticks
     # ax.yaxis.tick_right()
@@ -326,8 +355,47 @@ def matplotlib_plot(input_data, save_dir):
 
     # save the plot
     filename = os.path.split(input_data["filename"])[-1]
-    plt.title(filename.split("_")[0] + " Bound States")
+    plt_title = filename.split("_")[0] + " Bound States"
+    plt.title(plt_title)
     filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax'
+    plt.savefig(os.path.join(save_dir, filename+".png"))
+    plt.savefig(os.path.join(save_dir, filename+".svg"))
+
+    # same code but for excitation energies
+
+    plt.cla(); plt.clf()
+    # create figure
+    f = plt.figure()
+    ax = f.add_subplot(111)
+    plt.ylabel("$E_x$ [MeV]")
+
+    # play around with ticks
+    # ax.yaxis.tick_right()
+    ax.yaxis.set_tick_params(right=True, direction="in")
+    ax.xaxis.set_tick_params(length=0)
+    plt.xticks(np.arange(0.5, 2*len(ex_plot_arr[0])-0.5, 2.0))
+    ax.set_xticklabels(axis_labels)
+    plt.xlim(-1, 2*len(ex_plot_arr[0])+1)
+
+    for num, line in enumerate(ex_plot_arr):
+        # pick a colour for the line
+        colour = np.random.rand(3,)
+        for i, value in enumerate(line):
+            # plot in a bit of a strange way, so it keeps the xmgrace format.
+            # solid line for data point
+            plt.plot([2*i, 2*i+1], [value, value],
+                     c=colour, linestyle="solid")
+            if i != len(line) - 1:
+                # dotted line to show how it changes
+                next_val = line[i+1]
+                plt.plot([2*i+1, 2*i+2], [value, next_val],
+                         c=colour, linestyle="dotted")
+            # othewise we've reached the end of the list
+        plt.text(2*len(line) - 0.5, line[-1], line_labels[num])
+
+    # save the plot
+    filename = filename+"_excited"
+    plt.title(plt_title)
     plt.savefig(os.path.join(save_dir, filename+".png"))
     plt.savefig(os.path.join(save_dir, filename+".svg"))
 
