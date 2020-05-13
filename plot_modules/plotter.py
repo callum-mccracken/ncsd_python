@@ -299,9 +299,6 @@ def matplotlib_plot(input_data, save_dir):
             ex_e_list.append(ex_energy)
         energies.append(e_list)
         ex_energies.append(ex_e_list)
-        print(Nmax)
-        print(e_list)
-        print(ex_e_list)
 
     # experimental data, only 1 dataset
     axis_labels.append("Expt")
@@ -321,14 +318,11 @@ def matplotlib_plot(input_data, save_dir):
         ex_e_list.append(ex_energy)
     energies.append(e_list)
     ex_energies.append(ex_e_list)
-    print("expt")
-    print(e_list)
-    print(ex_e_list)
 
     energies = np.array(energies)
     ex_energies = np.array(ex_energies)
     plot_arr = energies.transpose()
-    ex_plot_arr = energies.transpose()
+    ex_plot_arr = ex_energies.transpose()
 
     # create figure
     f = plt.figure()
