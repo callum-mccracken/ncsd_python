@@ -309,7 +309,7 @@ def matplotlib_plot(input_data, save_dir):
             continue
         angular_momentum = int(e_spectrum["Expt"][state_num][0])
         parity = e_spectrum["Expt"][state_num][2]
-        parity = "+" if parity == "0" else "-"
+        parity = "+" if parity == 0 else "-"
         energy = float(e_spectrum["Expt"][state_num][3])
         ex_energy = energy - state_1_energy
         title = f"${angular_momentum}^{parity}$"
