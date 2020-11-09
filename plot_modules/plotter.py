@@ -254,10 +254,14 @@ def write_csv(input_data, save_dir):
     ex_file_string += ex_lines
     # now save
     filename = os.path.split(input_data["filename"])[-1]
-    filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.csv'
+    filename = filename[:filename.index("_Nmax")]
+    Nmax_min = min(c_spectrum.keys())
+    Nmax_max = max(c_spectrum.keys())
+    hbar_omega = input_data["hbar_omega"]
+    filename += f'_spectra_vs_Nmax_{Nmax_min}_to_{Nmax_max}_hw_{hbar_omega}.csv'
+    ex_filename = filename[:filename.index(".csv")]+'_excited.csv'
     with open(os.path.join(save_dir, filename), "w+") as open_file:
         open_file.write(file_string)
-    ex_filename = filename.replace(".csv", "_excited.csv")
     with open(os.path.join(save_dir, ex_filename), "w+") as open_file:
         open_file.write(ex_file_string)
 
@@ -362,7 +366,12 @@ def matplotlib_plot(input_data, save_dir):
     filename = os.path.split(input_data["filename"])[-1]
     plt_title = filename.split("_")[0] + " Bound States"
     plt.title(plt_title)
-    filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax'
+    filename = filename[:filename.index("_Nmax")]
+    Nmax_min = min(c_spectrum.keys())
+    Nmax_max = max(c_spectrum.keys())
+    hbar_omega = input_data["hbar_omega"]
+    filename += f'_spectra_vs_Nmax_{Nmax_min}_to_{Nmax_max}_hw_{hbar_omega}'
+
     plt.savefig(os.path.join(save_dir, filename+".png"))
     plt.savefig(os.path.join(save_dir, filename+".svg"))
 
@@ -399,10 +408,10 @@ def matplotlib_plot(input_data, save_dir):
         plt.text(2*len(line) - 0.5, line[-1], line_labels[num])
 
     # save the plot
-    filename = filename+"_excited"
+    ex_filename = filename + '_excited'
     plt.title(plt_title)
-    plt.savefig(os.path.join(save_dir, filename+".png"))
-    plt.savefig(os.path.join(save_dir, filename+".svg"))
+    plt.savefig(os.path.join(save_dir, ex_filename+".png"))
+    plt.savefig(os.path.join(save_dir, ex_filename+".svg"))
 
 
 def export_data(data, save_dir, grace_plotter_path, out_type="xmgrace"):
