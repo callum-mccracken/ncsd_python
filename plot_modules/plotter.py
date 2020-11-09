@@ -9,11 +9,12 @@ When calling most of these functions, data must be of the form::
         "nucleus_name": "B11",
         "Z": 5,
         "N": 6,
+        "hbar_omega": 18.0,
         "n_states": 10,
         "element_name": "Li",
         "Z_plus_N": "8",
         "interaction_name": "some_name",
-        "filename": "filename,
+        "filename": "filename",
         "calculated_spectrum": {
             <Nmax>: {
                 <state_num>: [
@@ -137,7 +138,11 @@ def write_xmgrace(input_data, save_dir, grace_plotter_path):
 
     # then save absolute energies and relative ones
     filename = os.path.split(input_data["filename"])[-1]
-    filename = filename[:filename.index("_Nmax")]+'_spectra_vs_Nmax.grdt'
+    filename = filename[:filename.index("_Nmax")]
+    Nmax_min = min(c_spectrum.keys())
+    Nmax_max = max(c_spectrum.keys())
+    hbar_omega = input_data["hbar_omega"]
+    filename += f'_spectra_vs_Nmax_{Nmax_min}_to_{Nmax_max}_hw_{hbar_omega}.grdt'
     ex_filename = filename[:filename.index(".grdt")]+'_excited.grdt'
     save_path = os.path.join(save_dir, filename)
     ex_save_path = os.path.join(save_dir, ex_filename)

@@ -64,6 +64,7 @@ def read_ncsd_output(filename):
             "Z": 5,
             "N": 6,
             "Z_plus_N": 11,
+            "hbar_omega": 18.0,
             "n_states": 10,
             "filename": "filename",
             "interaction_name": "n3lo-NN3Nlnl-srg2.0"

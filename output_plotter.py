@@ -35,10 +35,10 @@ grace_plotter_path = realpath("grace_spectra_plotter.exe")
 """The path to grace_spectra_plotter.exe"""
 
 
-output_paths = ["/home/callum/exch/Li8Li9/ncsd/Li8_n3lo-NN3Nlnl-srg2.0_Nmax0-10.20"]
+output_paths = ["/home/callum/Documents/npsm/input_files/petr_files/Be7_NNn4lo500_3NlnlcD-1.8cE-0.3_E71.8-srg2.0_Nmax0-10.20"]
 """List of paths to ncsd output files"""
 
-save_dir = "/home/callum/exch/Li8Li9/ncsd/"
+save_dir = "/home/callum/Documents/npsm/ncsd_python/"
 """
 save_dir: where to save the plot files, formatted as a string or None.
 - None = save in the same directory as the first output_paths file
